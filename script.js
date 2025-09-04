@@ -1,6 +1,9 @@
 // Nassif Group Website JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Initialize Strapi integration
+    initializeStrapiIntegration();
+    
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
     let lastScrollTop = 0;
@@ -339,3 +342,273 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Nassif Group website initialized successfully!');
 });
+
+// Strapi Integration Functions
+async function initializeStrapiIntegration() {
+    try {
+        // Load featured apartments on homepage
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            await loadFeaturedApartments();
+        }
+        
+        // Load apartments on services page
+        if (window.location.pathname === '/services.html') {
+            await loadApartmentsPage();
+        }
+        
+        // Load apartment statistics
+        await loadApartmentStats();
+        
+    } catch (error) {
+        console.error('Strapi integration failed:', error);
+        // Fallback to static content if Strapi is not available
+        console.log('Falling back to static content');
+    }
+}
+
+async function loadFeaturedApartments() {
+    try {
+        const response = await strapiAPI.getFeaturedApartments(3);
+        const featuredContainer = document.querySelector('.featured-properties .row:nth-child(2)');
+        
+        if (featuredContainer && response.data) {
+            featuredContainer.innerHTML = '';
+            
+            response.data.forEach(apartment => {
+                const formattedApartment = strapiAPI.formatApartment(apartment);
+                const apartmentCard = createApartmentCard(formattedApartment);
+                featuredContainer.appendChild(apartmentCard);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load featured apartments:', error);
+    }
+}
+
+async function loadApartmentsPage() {
+    try {
+        // Load initial apartments
+        await loadApartments();
+        
+        // Set up search functionality
+        setupSearchFunctionality();
+        
+        // Set up filter functionality
+        setupFilterFunctionality();
+        
+        // Set up pagination
+        setupPagination();
+        
+    } catch (error) {
+        console.error('Failed to load apartments page:', error);
+    }
+}
+
+async function loadApartments(filters = {}, page = 1) {
+    try {
+        const response = await strapiAPI.getApartments(page, 12, filters);
+        const apartmentsContainer = document.querySelector('.property-listings .row:nth-child(2)');
+        
+        if (apartmentsContainer && response.data) {
+            apartmentsContainer.innerHTML = '';
+            
+            response.data.forEach(apartment => {
+                const formattedApartment = strapiAPI.formatApartment(apartment);
+                const apartmentCard = createApartmentCard(formattedApartment);
+                apartmentsContainer.appendChild(apartmentCard);
+            });
+            
+            // Update pagination
+            updatePagination(response.meta.pagination);
+        }
+    } catch (error) {
+        console.error('Failed to load apartments:', error);
+    }
+}
+
+function createApartmentCard(apartment) {
+    const col = document.createElement('div');
+    col.className = 'col-lg-4 col-md-6 mb-4';
+    
+    const card = document.createElement('div');
+    card.className = 'property-card';
+    card.setAttribute('data-category', apartment.location);
+    
+    const imageUrl = apartment.mainImage || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop';
+    const statusClass = strapiAPI.getStatusClass(apartment.status);
+    const statusText = strapiAPI.getStatusDisplayName(apartment.status);
+    const locationText = strapiAPI.getLocationDisplayName(apartment.location);
+    const priceText = strapiAPI.formatPrice(apartment.price, apartment.currency);
+    
+    card.innerHTML = `
+        <div class="property-image">
+            <img src="${imageUrl}" alt="${apartment.name}" loading="lazy">
+            <div class="property-status ${statusClass}">${statusText}</div>
+        </div>
+        <div class="property-content">
+            <h3>${apartment.name}</h3>
+            <p class="property-location"><i class="fas fa-map-marker-alt"></i> ${locationText}, Lebanon</p>
+            <p class="property-price">${priceText}</p>
+            <p class="property-description">${apartment.description}</p>
+            <div class="property-features mb-3">
+                <span class="badge bg-light text-dark me-2"><i class="fas fa-bed"></i> ${apartment.bedrooms} Beds</span>
+                <span class="badge bg-light text-dark me-2"><i class="fas fa-bath"></i> ${apartment.bathrooms} Baths</span>
+                <span class="badge bg-light text-dark"><i class="fas fa-ruler-combined"></i> ${apartment.area} ${apartment.areaUnit}</span>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="#" class="btn btn-outline-primary flex-grow-1" onclick="viewApartmentDetails(${apartment.id})">View Details</a>
+                <a href="https://wa.me/96178858784?text=${apartment.whatsappMessage}" class="btn btn-success" target="_blank" title="Contact via WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    `;
+    
+    col.appendChild(card);
+    return col;
+}
+
+function setupSearchFunctionality() {
+    const searchInput = document.querySelector('#propertySearch');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                const searchTerm = this.value.trim();
+                if (searchTerm.length >= 2 || searchTerm.length === 0) {
+                    await performSearch(searchTerm);
+                }
+            }, 300);
+        });
+    }
+}
+
+async function performSearch(query) {
+    try {
+        const response = await strapiAPI.searchApartments(query, {}, 1, 12);
+        const apartmentsContainer = document.querySelector('.property-listings .row:nth-child(2)');
+        
+        if (apartmentsContainer && response.data) {
+            apartmentsContainer.innerHTML = '';
+            
+            if (response.data.length === 0) {
+                apartmentsContainer.innerHTML = '<div class="col-12 text-center"><p>No apartments found matching your search.</p></div>';
+                return;
+            }
+            
+            response.data.forEach(apartment => {
+                const formattedApartment = strapiAPI.formatApartment(apartment);
+                const apartmentCard = createApartmentCard(formattedApartment);
+                apartmentsContainer.appendChild(apartmentCard);
+            });
+            
+            updatePagination(response.pagination);
+        }
+    } catch (error) {
+        console.error('Search failed:', error);
+    }
+}
+
+function setupFilterFunctionality() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const filter = this.getAttribute('data-filter');
+                
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Load apartments with filter
+                const filters = filter === 'all' ? {} : { location: filter };
+                await loadApartments(filters, 1);
+            });
+        });
+    }
+}
+
+function setupPagination() {
+    // Pagination will be handled by updatePagination function
+}
+
+function updatePagination(pagination) {
+    // Create or update pagination controls
+    let paginationContainer = document.querySelector('.pagination-container');
+    if (!paginationContainer) {
+        paginationContainer = document.createElement('div');
+        paginationContainer.className = 'pagination-container mt-4';
+        document.querySelector('.property-listings .container').appendChild(paginationContainer);
+    }
+    
+    if (pagination.pageCount > 1) {
+        paginationContainer.innerHTML = createPaginationHTML(pagination);
+        setupPaginationEvents();
+    } else {
+        paginationContainer.innerHTML = '';
+    }
+}
+
+function createPaginationHTML(pagination) {
+    const { page, pageCount } = pagination;
+    let html = '<nav aria-label="Apartment pagination"><ul class="pagination justify-content-center">';
+    
+    // Previous button
+    if (page > 1) {
+        html += `<li class="page-item"><a class="page-link" href="#" data-page="${page - 1}">Previous</a></li>`;
+    }
+    
+    // Page numbers
+    const startPage = Math.max(1, page - 2);
+    const endPage = Math.min(pageCount, page + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === page ? 'active' : '';
+        html += `<li class="page-item ${activeClass}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+    }
+    
+    // Next button
+    if (page < pageCount) {
+        html += `<li class="page-item"><a class="page-link" href="#" data-page="${page + 1}">Next</a></li>`;
+    }
+    
+    html += '</ul></nav>';
+    return html;
+}
+
+function setupPaginationEvents() {
+    const paginationLinks = document.querySelectorAll('.pagination .page-link');
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const page = parseInt(this.getAttribute('data-page'));
+            await loadApartments({}, page);
+        });
+    });
+}
+
+async function loadApartmentStats() {
+    try {
+        const stats = await strapiAPI.getStats();
+        
+        // Update statistics in company highlights section
+        const highlightItems = document.querySelectorAll('.highlight-item h4');
+        if (highlightItems.length >= 4) {
+            highlightItems[0].textContent = `${stats.total}+`;
+            highlightItems[1].textContent = '4'; // Locations
+            highlightItems[2].textContent = `${stats.available}+`;
+            highlightItems[3].textContent = '15+'; // Years experience
+        }
+    } catch (error) {
+        console.error('Failed to load apartment stats:', error);
+    }
+}
+
+function viewApartmentDetails(apartmentId) {
+    // This function can be expanded to show detailed apartment view
+    console.log('View apartment details:', apartmentId);
+    // For now, you can redirect to a detail page or show a modal
+    // window.location.href = `apartment-details.html?id=${apartmentId}`;
+}
