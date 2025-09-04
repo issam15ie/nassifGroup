@@ -9,6 +9,8 @@
     "build": "strapi build",
     "strapi": "strapi",
     "seed": "node scripts/seed-database.js",
+    "export": "node scripts/export-apartments.js",
+    "check": "node scripts/check-apartments.js",
     "setup": "npm run seed && echo '✅ Database seeded successfully!'",
     "dev": "npm run develop"
   },
