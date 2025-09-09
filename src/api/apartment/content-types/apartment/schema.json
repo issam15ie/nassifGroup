@@ -22,9 +22,10 @@
       "targetField": "name",
       "required": true
     },
-    "location": {
-      "type": "enumeration",
-      "enum": ["bouar", "adma", "zalka", "ghazir"],
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
       "required": true
     },
     "price": {
@@ -118,8 +119,8 @@
     },
     "propertyType": {
       "type": "enumeration",
-      "enum": ["apartment", "penthouse", "duplex", "studio", "villa"],
-      "default": "apartment"
+      "enum": ["simplex", "duplex", "shops"],
+      "required": true
     },
     "furnishing": {
       "type": "enumeration",

@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "property_types",
+  "info": {
+    "singularName": "property-type",
+    "pluralName": "property-types",
+    "displayName": "Property Type",
+    "description": "Property types like simplex, duplex, shops with their specifications"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "enumeration",
+      "enum": ["simplex", "duplex", "shops"],
+      "required": true,
+      "unique": true
+    },
+    "displayName": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "icon": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "features": {
+      "type": "json",
+      "description": "Array of features for this property type"
+    },
+    "projects": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::project.project",
+      "mappedBy": "propertyTypes"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

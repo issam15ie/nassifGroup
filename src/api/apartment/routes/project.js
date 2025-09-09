@@ -15,5 +15,14 @@ module.exports = {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/apartments/project/:project/type/:propertyType',
+      handler: 'apartment.findByProjectAndType',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };

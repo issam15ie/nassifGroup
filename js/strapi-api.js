@@ -32,7 +32,7 @@ class StrapiAPI {
         const params = new URLSearchParams({
             'pagination[page]': page,
             'pagination[pageSize]': pageSize,
-            'populate': 'mainImage,images',
+            'populate': 'mainImage,images,project',
             'sort': 'priority:desc,createdAt:desc'
         });
 
@@ -51,29 +51,83 @@ class StrapiAPI {
         return await this.apiCall(`/apartments/featured?limit=${limit}`);
     }
 
-    // Get apartments by location
-    async getApartmentsByLocation(location, page = 1, pageSize = 12, status = 'available') {
-        return await this.apiCall(`/apartments/location/${location}?page=${page}&pageSize=${pageSize}&status=${status}`);
+    // Get apartments by project
+    async getApartmentsByProject(project, page = 1, pageSize = 12, status = 'available') {
+        return await this.apiCall(`/apartments/project/${project}?page=${page}&pageSize=${pageSize}&status=${status}`);
     }
 
-    // Search apartments
+    // Get apartments by project and property type
+    async getApartmentsByProjectAndType(project, propertyType, page = 1, pageSize = 12, status = 'available') {
+        return await this.apiCall(`/apartments/project/${project}/type/${propertyType}?page=${page}&pageSize=${pageSize}&status=${status}`);
+    }
+
+    // Search apartments using regular find endpoint with filters
     async searchApartments(query, filters = {}, page = 1, pageSize = 12) {
-        const params = new URLSearchParams({
-            page: page,
-            pageSize: pageSize,
-            ...filters
-        });
-
-        if (query) {
-            params.append('q', query);
+        // First get all apartments
+        const allApartments = await this.getApartments(1, 100, {}); // Get more apartments for search
+        
+        if (!query) {
+            return allApartments;
         }
-
-        return await this.apiCall(`/apartments/search?${params}`);
+        
+        // Filter apartments on the client side
+        const filteredData = allApartments.data.filter(apartment => {
+            const name = apartment.attributes.name?.toLowerCase() || '';
+            const description = apartment.attributes.description?.toLowerCase() || '';
+            const address = apartment.attributes.address?.toLowerCase() || '';
+            const searchTerm = query.toLowerCase();
+            
+            return name.includes(searchTerm) || 
+                   description.includes(searchTerm) || 
+                   address.includes(searchTerm);
+        });
+        
+        // Apply pagination
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+        
+        return {
+            data: paginatedData,
+            meta: {
+                pagination: {
+                    page: page,
+                    pageSize: pageSize,
+                    pageCount: Math.ceil(filteredData.length / pageSize),
+                    total: filteredData.length
+                }
+            }
+        };
     }
 
     // Get apartment statistics
     async getStats() {
         return await this.apiCall('/apartments/stats');
+    }
+
+    // Get all projects
+    async getProjects() {
+        return await this.apiCall('/projects?populate=propertyTypes,mainImage,images');
+    }
+
+    // Get project by ID or slug
+    async getProject(id) {
+        return await this.apiCall(`/projects/${id}?populate=propertyTypes,mainImage,images`);
+    }
+
+    // Get all property types
+    async getPropertyTypes() {
+        return await this.apiCall('/property-types?populate=image,projects');
+    }
+
+    // Get property types by project
+    async getPropertyTypesByProject(projectId) {
+        return await this.apiCall(`/property-types/project/${projectId}?populate=image,projects`);
+    }
+
+    // Get all property types with project information
+    async getPropertyTypesWithProjects() {
+        return await this.apiCall('/property-types/with-projects');
     }
 
     // Get single apartment by ID
@@ -82,8 +136,8 @@ class StrapiAPI {
     }
 
     // Get similar apartments
-    async getSimilarApartments(apartmentId, location, limit = 4) {
-        return await this.apiCall(`/apartments?filters[location]=${location}&filters[id][$ne]=${apartmentId}&pagination[limit]=${limit}&populate=mainImage`);
+    async getSimilarApartments(apartmentId, project, limit = 4) {
+        return await this.apiCall(`/apartments?filters[project]=${project}&filters[id][$ne]=${apartmentId}&pagination[limit]=${limit}&populate=mainImage,project`);
     }
 
     // Format apartment data for display
@@ -92,7 +146,8 @@ class StrapiAPI {
             id: apartment.id,
             name: apartment.attributes.name,
             slug: apartment.attributes.slug,
-            location: apartment.attributes.location,
+            project: apartment.attributes.project?.data?.attributes?.name || apartment.attributes.project,
+            propertyType: apartment.attributes.propertyType,
             price: apartment.attributes.price,
             currency: apartment.attributes.currency || '$',
             description: apartment.attributes.description,
@@ -114,7 +169,8 @@ class StrapiAPI {
 
     // Generate WhatsApp message
     generateWhatsAppMessage(apartment) {
-        const message = `Hi! I'm interested in this property: *${apartment.name}* - ${apartment.currency}${apartment.price.toLocaleString()} - ${apartment.bedrooms} beds, ${apartment.bathrooms} baths, ${apartment.area} ${apartment.areaUnit || 'sq ft'}. Location: ${apartment.location}, Lebanon. Description: ${apartment.description}`;
+        const projectName = apartment.project?.data?.attributes?.name || apartment.project || 'Unknown Project';
+        const message = `Hi! I'm interested in this property: *${apartment.name}* - ${apartment.currency}${apartment.price.toLocaleString()} - ${apartment.bedrooms} beds, ${apartment.bathrooms} baths, ${apartment.area} ${apartment.areaUnit || 'sq ft'}. Project: ${projectName}. Description: ${apartment.description}`;
         return encodeURIComponent(message);
     }
 
@@ -123,15 +179,28 @@ class StrapiAPI {
         return `${currency}${price.toLocaleString()}`;
     }
 
-    // Get location display name
-    getLocationDisplayName(location) {
-        const locations = {
-            'bouar': 'Bouar',
-            'adma': 'Adma',
-            'zalka': 'Zalka',
-            'ghazir': 'Ghazir'
+    // Get project display name
+    getProjectDisplayName(project) {
+        const projects = {
+            'bouar 638 (colina)': 'Bouar 638 (Colina)',
+            'shayle 93': 'Shayle 93',
+            'fat2a 315': 'Fat2a 315',
+            'mejlaya 246': 'Mejlaya 246',
+            'bouar 673': 'Bouar 673',
+            'zouk 111': 'Zouk 111',
+            'zouk 2324': 'Zouk 2324'
         };
-        return locations[location] || location;
+        return projects[project] || project;
+    }
+
+    // Get property type display name
+    getPropertyTypeDisplayName(propertyType) {
+        const types = {
+            'simplex': 'Simplex',
+            'duplex': 'Duplex',
+            'shops': 'Shops'
+        };
+        return types[propertyType] || propertyType;
     }
 
     // Get status display name

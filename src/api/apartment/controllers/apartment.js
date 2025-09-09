@@ -26,19 +26,19 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
     }
   },
 
-  // Custom method to get apartments by location
-  async findByLocation(ctx) {
+  // Custom method to get apartments by project
+  async findByProject(ctx) {
     try {
-      const { location } = ctx.params;
+      const { project } = ctx.params;
       const { page = 1, pageSize = 12, status = 'available' } = ctx.query;
 
       const entities = await strapi.entityService.findMany('api::apartment.apartment', {
         filters: {
-          location: location,
+          project: project,
           status: status,
           publishedAt: { $notNull: true }
         },
-        populate: ['mainImage', 'images'],
+        populate: ['mainImage', 'images', 'project'],
         sort: { priority: 'desc', createdAt: 'desc' },
         start: (page - 1) * pageSize,
         limit: pageSize
@@ -46,7 +46,49 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
 
       const total = await strapi.entityService.count('api::apartment.apartment', {
         filters: {
-          location: location,
+          project: project,
+          status: status,
+          publishedAt: { $notNull: true }
+        }
+      });
+
+      return {
+        data: entities,
+        pagination: {
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total,
+          pageCount: Math.ceil(total / pageSize)
+        }
+      };
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  },
+
+  // Custom method to get apartments by project and property type
+  async findByProjectAndType(ctx) {
+    try {
+      const { project, propertyType } = ctx.params;
+      const { page = 1, pageSize = 12, status = 'available' } = ctx.query;
+
+      const entities = await strapi.entityService.findMany('api::apartment.apartment', {
+        filters: {
+          project: project,
+          propertyType: propertyType,
+          status: status,
+          publishedAt: { $notNull: true }
+        },
+        populate: ['mainImage', 'images', 'project'],
+        sort: { priority: 'desc', createdAt: 'desc' },
+        start: (page - 1) * pageSize,
+        limit: pageSize
+      });
+
+      const total = await strapi.entityService.count('api::apartment.apartment', {
+        filters: {
+          project: project,
+          propertyType: propertyType,
           status: status,
           publishedAt: { $notNull: true }
         }
@@ -69,7 +111,7 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
   // Custom method to search apartments
   async search(ctx) {
     try {
-      const { q, location, minPrice, maxPrice, bedrooms, bathrooms, status = 'available' } = ctx.query;
+      const { q, project, propertyType, minPrice, maxPrice, bedrooms, bathrooms, status } = ctx.query;
       const { page = 1, pageSize = 12 } = ctx.query;
 
       let filters = {
@@ -79,9 +121,14 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
       if (status) {
         filters.status = status;
       }
+      // If no status specified, search all apartments (available and sold)
 
-      if (location) {
-        filters.location = location;
+      if (project) {
+        filters.project = project;
+      }
+
+      if (propertyType) {
+        filters.propertyType = propertyType;
       }
 
       if (minPrice || maxPrice) {
@@ -108,7 +155,7 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
 
       const entities = await strapi.entityService.findMany('api::apartment.apartment', {
         filters,
-        populate: ['mainImage', 'images'],
+        populate: ['mainImage', 'images', 'project'],
         sort: { priority: 'desc', createdAt: 'desc' },
         start: (page - 1) * pageSize,
         limit: pageSize
@@ -153,13 +200,13 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
         }
       });
 
-      const byLocation = {};
-      const locations = ['bouar', 'adma', 'zalka', 'ghazir'];
+      const byProject = {};
+      const projects = ['bouar 638 (colina)', 'shayle 93', 'fat2a 315', 'mejlaya 246', 'bouar 673', 'zouk 111', 'zouk 2324'];
       
-      for (const location of locations) {
-        byLocation[location] = await strapi.entityService.count('api::apartment.apartment', {
+      for (const project of projects) {
+        byProject[project] = await strapi.entityService.count('api::apartment.apartment', {
           filters: { 
-            location: location,
+            project: project,
             publishedAt: { $notNull: true }
           }
         });
@@ -169,7 +216,7 @@ module.exports = createCoreController('api::apartment.apartment', ({ strapi }) =
         total,
         available,
         sold,
-        byLocation
+        byProject
       };
     } catch (err) {
       ctx.throw(500, err);

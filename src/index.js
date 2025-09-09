@@ -26,7 +26,7 @@ module.exports = {
       .findOne({ where: { type: 'public' } });
 
     if (publicRole) {
-      // Grant permissions for apartment endpoints
+      // Grant permissions for apartment API only (for now)
       const permissions = [
         {
           action: 'api::apartment.apartment.find',
@@ -71,7 +71,14 @@ module.exports = {
           role: publicRole.id,
         },
         {
-          action: 'api::apartment.apartment.findByLocation',
+          action: 'api::apartment.apartment.findByProject',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::apartment.apartment.findByProjectAndType',
           subject: null,
           properties: {},
           conditions: [],
@@ -86,6 +93,48 @@ module.exports = {
         },
         {
           action: 'api::apartment.apartment.getStats',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::property-type.property-type.find',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::property-type.property-type.findOne',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::property-type.property-type.findByProject',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::property-type.property-type.findAllWithProjects',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::project.project.find',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::project.project.findOne',
           subject: null,
           properties: {},
           conditions: [],

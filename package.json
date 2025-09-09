@@ -9,9 +9,16 @@
     "build": "strapi build",
     "strapi": "strapi",
     "seed": "node scripts/seed-database.js",
+    "seed-projects": "node scripts/seed-projects.js",
+    "seed-projects-direct": "node scripts/seed-projects-direct.js",
+    "create-projects": "node scripts/create-projects-admin.js",
+    "create-projects-sqlite": "node scripts/create-projects-sqlite.js",
+    "check-projects": "node scripts/check-projects.js",
+    "complete-projects": "node scripts/complete-projects.js",
     "export": "node scripts/export-apartments.js",
     "check": "node scripts/check-apartments.js",
     "setup": "npm run seed && echo '✅ Database seeded successfully!'",
+    "setup-projects": "npm run seed-projects && echo '✅ Projects seeded successfully!'",
     "dev": "npm run develop"
   },
   "dependencies": {

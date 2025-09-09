@@ -1,0 +1,127 @@
+[
+  {
+    "name": "bouar 638 (colina)",
+    "slug": "bouar-638-colina",
+    "description": "Premium residential project in Bouar with various property types",
+    "status": "available",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex",
+      "shops"
+    ],
+    "meterRanges": {
+      "all": "100-165m",
+      "simplex": "100-145m",
+      "duplex": "105-165m",
+      "shops": "50-130m"
+    },
+    "priority": 1,
+    "publishedAt": "2025-09-07T10:27:24.926Z"
+  },
+  {
+    "name": "shayle 93",
+    "slug": "shayle-93",
+    "description": "Modern residential development in Shayle",
+    "status": "available",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex"
+    ],
+    "meterRanges": {
+      "all": "60-270m",
+      "simplex": "60-170m",
+      "duplex": "110-270m"
+    },
+    "priority": 2,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  },
+  {
+    "name": "fat2a 315",
+    "slug": "fat2a-315",
+    "description": "Completed residential project in Fat2a",
+    "status": "sold_out",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex"
+    ],
+    "meterRanges": {
+      "all": "80-200m",
+      "simplex": "80-150m",
+      "duplex": "120-200m"
+    },
+    "priority": 3,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  },
+  {
+    "name": "mejlaya 246",
+    "slug": "mejlaya-246",
+    "description": "Luxury residential project in Mejlaya",
+    "status": "sold_out",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex",
+      "shops"
+    ],
+    "meterRanges": {
+      "all": "90-180m",
+      "simplex": "90-140m",
+      "duplex": "130-180m",
+      "shops": "60-120m"
+    },
+    "priority": 4,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  },
+  {
+    "name": "bouar 673",
+    "slug": "bouar-673",
+    "description": "High-end residential development in Bouar",
+    "status": "sold_out",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex"
+    ],
+    "meterRanges": {
+      "all": "100-250m",
+      "simplex": "100-180m",
+      "duplex": "150-250m"
+    },
+    "priority": 5,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  },
+  {
+    "name": "zouk 111",
+    "slug": "zouk-111",
+    "description": "Exclusive residential project in Zouk",
+    "status": "sold_out",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex",
+      "shops"
+    ],
+    "meterRanges": {
+      "all": "70-220m",
+      "simplex": "70-160m",
+      "duplex": "140-220m",
+      "shops": "40-100m"
+    },
+    "priority": 6,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  },
+  {
+    "name": "zouk 2324",
+    "slug": "zouk-2324",
+    "description": "Premium residential development in Zouk",
+    "status": "sold_out",
+    "availablePropertyTypes": [
+      "simplex",
+      "duplex"
+    ],
+    "meterRanges": {
+      "all": "85-200m",
+      "simplex": "85-150m",
+      "duplex": "130-200m"
+    },
+    "priority": 7,
+    "publishedAt": "2025-09-07T10:27:24.927Z"
+  }
+]

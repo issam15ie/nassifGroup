@@ -1,0 +1,48 @@
+[
+  {
+    "name": "simplex",
+    "displayName": "Simplex",
+    "description": "Modern simplex apartments with open layouts and contemporary design",
+    "icon": "fas fa-home",
+    "features": [
+      "Open plan living",
+      "Modern kitchen",
+      "Balcony access",
+      "Parking space",
+      "Security system"
+    ],
+    "priority": 1,
+    "publishedAt": "2025-09-07T11:12:45.305Z"
+  },
+  {
+    "name": "duplex",
+    "displayName": "Duplex",
+    "description": "Spacious duplex apartments with two levels and premium finishes",
+    "icon": "fas fa-building",
+    "features": [
+      "Two-level layout",
+      "Premium finishes",
+      "Private terrace",
+      "Master suite",
+      "Guest room",
+      "Storage space"
+    ],
+    "priority": 2,
+    "publishedAt": "2025-09-07T11:12:45.306Z"
+  },
+  {
+    "name": "shops",
+    "displayName": "Shops",
+    "description": "Commercial spaces perfect for retail and business use",
+    "icon": "fas fa-store",
+    "features": [
+      "Street level access",
+      "High foot traffic",
+      "Flexible layout",
+      "Storage area",
+      "Parking available"
+    ],
+    "priority": 3,
+    "publishedAt": "2025-09-07T11:12:45.306Z"
+  }
+]

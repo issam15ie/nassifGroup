@@ -696,7 +696,11 @@ export interface ApiApartmentApartment extends Schema.CollectionType {
       }>;
     slug: Attribute.UID<'api::apartment.apartment', 'name'> &
       Attribute.Required;
-    location: Attribute.Enumeration<['bouar', 'adma', 'zalka', 'ghazir']> &
+    project: Attribute.Relation<
+      'api::apartment.apartment',
+      'manyToOne',
+      'api::project.project'
+    > &
       Attribute.Required;
     price: Attribute.Decimal &
       Attribute.Required &
@@ -759,10 +763,8 @@ export interface ApiApartmentApartment extends Schema.CollectionType {
     contactPhone: Attribute.String & Attribute.DefaultTo<'+96178858784'>;
     coordinates: Attribute.JSON;
     address: Attribute.String;
-    propertyType: Attribute.Enumeration<
-      ['apartment', 'penthouse', 'duplex', 'studio', 'villa']
-    > &
-      Attribute.DefaultTo<'apartment'>;
+    propertyType: Attribute.Enumeration<['simplex', 'duplex', 'shops']> &
+      Attribute.Required;
     furnishing: Attribute.Enumeration<
       ['furnished', 'semi-furnished', 'unfurnished']
     > &
@@ -947,6 +949,141 @@ export interface ApiApartmentApartment extends Schema.CollectionType {
   };
 }
 
+export interface ApiProjectProject extends Schema.CollectionType {
+  collectionName: 'projects';
+  info: {
+    singularName: 'project';
+    pluralName: 'projects';
+    displayName: 'Project';
+    description: 'Real estate development projects';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.UID<'api::project.project', 'name'> & Attribute.Required;
+    description: Attribute.Text;
+    status: Attribute.Enumeration<['available', 'sold_out']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'available'>;
+    units: Attribute.Relation<
+      'api::project.project',
+      'oneToMany',
+      'api::unit.unit'
+    >;
+    mainImage: Attribute.Media;
+    images: Attribute.Media;
+    priority: Attribute.Integer & Attribute.DefaultTo<0>;
+    propertyTypeInfo: Attribute.JSON;
+    propertyTypes: Attribute.Relation<
+      'api::project.project',
+      'manyToMany',
+      'api::property-type.property-type'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::project.project',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::project.project',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPropertyTypePropertyType extends Schema.CollectionType {
+  collectionName: 'property_types';
+  info: {
+    singularName: 'property-type';
+    pluralName: 'property-types';
+    displayName: 'Property Type';
+    description: 'Property types like simplex, duplex, shops with their specifications';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.Enumeration<['simplex', 'duplex', 'shops']> &
+      Attribute.Required &
+      Attribute.Unique;
+    displayName: Attribute.String & Attribute.Required;
+    description: Attribute.Text;
+    image: Attribute.Media;
+    icon: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    features: Attribute.JSON;
+    projects: Attribute.Relation<
+      'api::property-type.property-type',
+      'manyToMany',
+      'api::project.project'
+    >;
+    priority: Attribute.Integer & Attribute.DefaultTo<0>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::property-type.property-type',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::property-type.property-type',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiUnitUnit extends Schema.CollectionType {
+  collectionName: 'units';
+  info: {
+    singularName: 'unit';
+    pluralName: 'units';
+    displayName: 'Unit';
+    description: 'Individual units within projects (Simplex, Duplex, Shops)';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    type: Attribute.Enumeration<['simplex', 'duplex', 'shop']> &
+      Attribute.Required;
+    size_min: Attribute.Integer & Attribute.Required;
+    size_max: Attribute.Integer & Attribute.Required;
+    status: Attribute.Enumeration<['available', 'sold']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'available'>;
+    project: Attribute.Relation<
+      'api::unit.unit',
+      'manyToOne',
+      'api::project.project'
+    >;
+    price: Attribute.Decimal;
+    description: Attribute.Text;
+    images: Attribute.Media;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::unit.unit', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::unit.unit', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -964,6 +1101,9 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
       'api::apartment.apartment': ApiApartmentApartment;
+      'api::project.project': ApiProjectProject;
+      'api::property-type.property-type': ApiPropertyTypePropertyType;
+      'api::unit.unit': ApiUnitUnit;
     }
   }
 }
