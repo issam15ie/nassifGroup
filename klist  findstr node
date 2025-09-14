@@ -1,0 +1,8 @@
+[33ma8c726a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat:Replace locations with dynamic projects and property types
+[33m7b0b9d0[m feat: Add Sarkis House apartment to static HTML for Netlify display
+[33m0d313b4[m feat: Add comprehensive database seeding system with export/check utilities
+[33mc8e8fa1[m feat: Add database seeding system for consistent sample data
+[33m70a3fd1[m feat: Migrate from static HTML to Strapi CMS with Node.js server
+[33mc74e564[m whatsapp links on available appartements
+[33m15f2bce[m projectCommit
+[33mdd38924[m Initial commit

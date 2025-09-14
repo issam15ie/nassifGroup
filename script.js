@@ -376,7 +376,7 @@ async function initializeStrapiIntegration() {
 async function loadFeaturedApartments() {
     try {
         const response = await strapiAPI.getFeaturedApartments(3);
-        const featuredContainer = document.querySelector('.featured-properties .row:nth-child(2)');
+        const featuredContainer = document.querySelector('#featured-properties-container');
         
         if (featuredContainer && response.data) {
             featuredContainer.innerHTML = '';
@@ -389,6 +389,7 @@ async function loadFeaturedApartments() {
         }
     } catch (error) {
         console.error('Failed to load featured apartments:', error);
+        showNoDataMessage();
     }
 }
 
@@ -399,9 +400,7 @@ async function loadApartmentsPage() {
         
     } catch (error) {
         console.error('Failed to load from Strapi:', error);
-        // Fallback to static content if Strapi is not available
-        console.log('Falling back to static content');
-        loadStaticProjectsData();
+        showNoDataMessage();
     }
     
     // Create dynamic project filter buttons
@@ -543,25 +542,56 @@ async function loadProjectsAndPropertyTypes() {
                     status: project.attributes.status,
                     description: project.attributes.description,
                     propertyTypeInfo: project.attributes.propertyTypeInfo || {},
-                    propertyTypes: {}
+                    propertyTypes: {},
+                    propertyTypesOrder: [] // Store the order of property types
                 };
                 
-                // Process property types for this project
+                // Process property types - first from Strapi relations (to preserve order), then from propertyTypeInfo JSON
                 if (project.attributes.propertyTypes && project.attributes.propertyTypes.data) {
+                    // Use Strapi property types relation order
                     project.attributes.propertyTypes.data.forEach(pt => {
                         const propertyType = pt.attributes;
-                        // Get range from project's propertyTypeInfo, not from property type
-                        const range = projectData.propertyTypeInfo[propertyType.name]?.range || 'N/A';
+                        const propertyTypeName = propertyType.name;
+                        const typeInfo = projectData.propertyTypeInfo[propertyTypeName] || {};
                         
-                        projectData.propertyTypes[propertyType.name] = {
-                            id: pt.id,
-                            name: propertyType.name,
-                            displayName: propertyType.displayName,
-                            range: range,
-                            image: propertyType.image?.data?.attributes?.url || getDefaultImage(propertyType.name),
-                            description: propertyType.description,
-                            features: propertyType.features
+                        // Get property type details from global PROPERTY_TYPES_DATA or use defaults
+                        const globalTypeData = PROPERTY_TYPES_DATA[propertyTypeName] || {};
+                        
+                        projectData.propertyTypes[propertyTypeName] = {
+                            name: propertyTypeName,
+                            displayName: globalTypeData.displayName || propertyType.displayName || propertyTypeName.charAt(0).toUpperCase() + propertyTypeName.slice(1),
+                            range: typeInfo.range || 'N/A',
+                            image: typeInfo.image || propertyType.image?.data?.attributes?.url || globalTypeData.image || getDefaultImage(propertyTypeName),
+                            description: globalTypeData.description || propertyType.description || `Modern ${propertyTypeName} properties with contemporary design`,
+                            features: globalTypeData.features || propertyType.features || [],
+                            status: typeInfo.status || 'available',
+                            priority: typeInfo.priority || globalTypeData.priority || 999
                         };
+                        
+                        // Store the order
+                        projectData.propertyTypesOrder.push(propertyTypeName);
+                    });
+                } else if (projectData.propertyTypeInfo && Object.keys(projectData.propertyTypeInfo).length > 0) {
+                    // Fallback: use propertyTypeInfo JSON data order
+                    Object.keys(projectData.propertyTypeInfo).forEach(propertyTypeName => {
+                        const typeInfo = projectData.propertyTypeInfo[propertyTypeName];
+                        
+                        // Get property type details from global PROPERTY_TYPES_DATA or use defaults
+                        const globalTypeData = PROPERTY_TYPES_DATA[propertyTypeName] || {};
+                        
+                        projectData.propertyTypes[propertyTypeName] = {
+                            name: propertyTypeName,
+                            displayName: globalTypeData.displayName || propertyTypeName.charAt(0).toUpperCase() + propertyTypeName.slice(1),
+                            range: typeInfo.range || 'N/A',
+                            image: typeInfo.image || globalTypeData.image || getDefaultImage(propertyTypeName),
+                            description: globalTypeData.description || `Modern ${propertyTypeName} properties with contemporary design`,
+                            features: globalTypeData.features || [],
+                            status: typeInfo.status || 'available',
+                            priority: typeInfo.priority || globalTypeData.priority || 999
+                        };
+                        
+                        // Store the order
+                        projectData.propertyTypesOrder.push(propertyTypeName);
                     });
                 }
                 
@@ -590,214 +620,28 @@ async function loadProjectsAndPropertyTypes() {
     }
 }
 
-// Fallback static data
-function loadStaticProjectsData() {
-    PROJECTS_DATA = {
-        'bouar 638 (colina)': {
-            name: 'Bouar 638 (Colina)',
-            status: 'available',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '100-145m',
-                    status: 'available'
-                },
-                duplex: {
-                    range: '105-165m',
-                    status: 'available'
-                },
-                shops: {
-                    range: '50-130m',
-                    status: 'available'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '100-145m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '105-165m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                },
-                shops: { 
-                    displayName: 'Shops',
-                    range: '50-130m', 
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-                    description: 'Commercial spaces perfect for retail and business use'
-                }
-            }
-        },
-        'shayle 93': {
-            name: 'Shayle 93',
-            status: 'available',
-            propertyTypeInfo: {},
-            propertyTypes: {}
-        },
-        'fat2a 315': {
-            name: 'Fat2a 315',
-            status: 'sold_out',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '80-150m',
-                    status: 'sold_out'
-                },
-                duplex: {
-                    range: '120-200m',
-                    status: 'sold_out'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '80-150m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '120-200m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                }
-            }
-        },
-        'mejlaya 246': {
-            name: 'Mejlaya 246',
-            status: 'sold_out',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '90-140m',
-                    status: 'sold_out'
-                },
-                duplex: {
-                    range: '130-180m',
-                    status: 'sold_out'
-                },
-                shops: {
-                    range: '60-120m',
-                    status: 'sold_out'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '90-140m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '130-180m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                },
-                shops: { 
-                    displayName: 'Shops',
-                    range: '60-120m', 
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-                    description: 'Commercial spaces perfect for retail and business use'
-                }
-            }
-        },
-        'bouar 673': {
-            name: 'Bouar 673',
-            status: 'sold_out',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '100-180m',
-                    status: 'sold_out'
-                },
-                duplex: {
-                    range: '150-250m',
-                    status: 'sold_out'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '100-180m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '150-250m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                }
-            }
-        },
-        'zouk 111': {
-            name: 'Zouk 111',
-            status: 'sold_out',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '70-160m',
-                    status: 'sold_out'
-                },
-                duplex: {
-                    range: '140-220m',
-                    status: 'sold_out'
-                },
-                shops: {
-                    range: '40-100m',
-                    status: 'sold_out'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '70-160m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '140-220m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                },
-                shops: { 
-                    displayName: 'Shops',
-                    range: '40-100m', 
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-                    description: 'Commercial spaces perfect for retail and business use'
-                }
-            }
-        },
-        'zouk 2324': {
-            name: 'Zouk 2324',
-            status: 'sold_out',
-            propertyTypeInfo: {
-                simplex: {
-                    range: '85-150m',
-                    status: 'sold_out'
-                },
-                duplex: {
-                    range: '130-200m',
-                    status: 'sold_out'
-                }
-            },
-            propertyTypes: {
-                simplex: { 
-                    displayName: 'Simplex',
-                    range: '85-150m', 
-                    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-                    description: 'Modern simplex apartments with open layouts and contemporary design'
-                },
-                duplex: { 
-                    displayName: 'Duplex',
-                    range: '130-200m', 
-                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-                    description: 'Spacious duplex apartments with two levels and premium finishes'
-                }
-            }
-        }
-    };
+// Show message when no data is available
+function showNoDataMessage() {
+    const propertyListings = document.querySelector('.property-listings');
+    const featuredProperties = document.querySelector('#featured-properties-container');
+    
+    const noDataMessage = `
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-info">
+                <h4><i class="fas fa-info-circle"></i> No Properties Available</h4>
+                <p>We're currently updating our property listings. Please check back soon or contact us for more information.</p>
+                <a href="contact.html" class="btn btn-primary">Contact Us</a>
+            </div>
+        </div>
+    `;
+    
+    if (propertyListings) {
+        propertyListings.innerHTML = noDataMessage;
+    }
+    
+    if (featuredProperties) {
+        featuredProperties.innerHTML = noDataMessage;
+    }
 }
 
 // Get default image for property type
@@ -808,6 +652,25 @@ function getDefaultImage(propertyType) {
         'shops': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop'
     };
     return defaultImages[propertyType] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop';
+}
+
+// Helper function to get property type info from JSON with image support
+function getPropertyTypeInfo(projectKey, propertyTypeName) {
+    const projectData = PROJECTS_DATA[projectKey];
+    if (!projectData || !projectData.propertyTypeInfo) {
+        return null;
+    }
+    
+    const typeInfo = projectData.propertyTypeInfo[propertyTypeName];
+    if (!typeInfo) {
+        return null;
+    }
+    
+    // Add image support to propertyTypeInfo
+    return {
+        ...typeInfo,
+        image: typeInfo.image || getDefaultImage(propertyTypeName)
+    };
 }
 
 // All apartments now loaded from database
@@ -904,12 +767,26 @@ function showPropertyTypes(projectKey) {
     
     // Create property type cards
     if (Object.keys(projectData.propertyTypes).length > 0) {
-        Object.entries(projectData.propertyTypes).forEach(([type, typeData]) => {
-            const card = createPropertyTypeCard(projectKey, type, typeData);
-            if (container) {
-                container.appendChild(card);
-            }
-        });
+        // Display property types in the stored order (from Strapi relations or JSON)
+        if (projectData.propertyTypesOrder && projectData.propertyTypesOrder.length > 0) {
+            projectData.propertyTypesOrder.forEach(propertyTypeName => {
+                const typeData = projectData.propertyTypes[propertyTypeName];
+                if (typeData) {
+                    const card = createPropertyTypeCard(projectKey, propertyTypeName, typeData);
+                    if (container) {
+                        container.appendChild(card);
+                    }
+                }
+            });
+        } else {
+            // Fallback: use Object.entries if no order is stored
+            Object.entries(projectData.propertyTypes).forEach(([propertyTypeName, typeData]) => {
+                const card = createPropertyTypeCard(projectKey, propertyTypeName, typeData);
+                if (container) {
+                    container.appendChild(card);
+                }
+            });
+        }
     } else {
             // No property types available for this project
             if (container) {

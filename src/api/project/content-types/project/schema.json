@@ -55,13 +55,14 @@
     },
     "propertyTypeInfo": {
       "type": "json",
-      "description": "Complete information for each property type in this project (ranges and status)"
+      "required": false
     },
     "propertyTypes": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::property-type.property-type",
-      "inversedBy": "projects"
+      "inversedBy": "projects",
+      "description": "PROPERTY TYPES RELATION - Select which property types are available for this project. IMPORTANT: ORDER MATTERS - Property types display in the same order you select them here. First selected = First displayed on website. You can reorder by dragging items in the list. Tips: Select property types in the order you want them to appear, use the propertyTypeInfo JSON field to add specific details (ranges, status, images). This relation controls which property types are available for this project. Make sure to also fill the propertyTypeInfo JSON field with details."
     }
   }
 }

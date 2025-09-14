@@ -1,0 +1,23 @@
+{
+  "_comment": "Property Type Info JSON Template - Copy this structure to your project's propertyTypeInfo field",
+  "_instructions": "1. Replace property type names (simplex, duplex, shops) with your actual property types",
+  "_ordering": "2. Property types display in the SAME ORDER as they appear in this JSON",
+  "_fields": "3. Required: range, status. Optional: image",
+  "_status_options": "4. Status can be: 'available' or 'sold_out'",
+  
+  "simplex": {
+    "range": "100-145m",
+    "status": "available",
+    "image": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+  },
+  "duplex": {
+    "range": "105-165m", 
+    "status": "available",
+    "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
+  },
+  "shops": {
+    "range": "50-130m",
+    "status": "sold_out", 
+    "image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop"
+  }
+}
