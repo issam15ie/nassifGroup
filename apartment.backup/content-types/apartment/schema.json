@@ -1,0 +1,472 @@
+{
+  "kind": "collectionType",
+  "collectionName": "apartments",
+  "info": {
+    "singularName": "apartment",
+    "pluralName": "apartments",
+    "displayName": "Apartment",
+    "description": "Real estate apartment listings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "$",
+      "maxLength": 10
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "shortDescription": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["available", "sold", "reserved", "pending"],
+      "default": "available",
+      "required": true
+    },
+    "bedrooms": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "bathrooms": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "area": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "areaUnit": {
+      "type": "string",
+      "default": "sq ft",
+      "maxLength": 20
+    },
+    "floor": {
+      "type": "integer",
+      "min": 0
+    },
+    "totalFloors": {
+      "type": "integer",
+      "min": 1
+    },
+    "yearBuilt": {
+      "type": "integer",
+      "min": 1800,
+      "max": 2030
+    },
+    "features": {
+      "type": "json"
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "whatsappMessage": {
+      "type": "text"
+    },
+    "contactPhone": {
+      "type": "string",
+      "default": "+96178858784"
+    },
+    "coordinates": {
+      "type": "json"
+    },
+    "address": {
+      "type": "string"
+    },
+    "propertyType": {
+      "type": "enumeration",
+      "enum": ["simplex", "duplex", "shops"],
+      "required": true
+    },
+    "furnishing": {
+      "type": "enumeration",
+      "enum": ["furnished", "semi-furnished", "unfurnished"],
+      "default": "unfurnished"
+    },
+    "parking": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "balcony": {
+      "type": "boolean",
+      "default": false
+    },
+    "garden": {
+      "type": "boolean",
+      "default": false
+    },
+    "pool": {
+      "type": "boolean",
+      "default": false
+    },
+    "gym": {
+      "type": "boolean",
+      "default": false
+    },
+    "security": {
+      "type": "boolean",
+      "default": false
+    },
+    "elevator": {
+      "type": "boolean",
+      "default": false
+    },
+    "view": {
+      "type": "enumeration",
+      "enum": ["mountain", "sea", "city", "garden", "street", "pool"],
+      "multiple": true
+    },
+    "heating": {
+      "type": "enumeration",
+      "enum": ["central", "individual", "none"],
+      "default": "none"
+    },
+    "cooling": {
+      "type": "enumeration",
+      "enum": ["central", "individual", "none"],
+      "default": "none"
+    },
+    "internet": {
+      "type": "boolean",
+      "default": false
+    },
+    "cable": {
+      "type": "boolean",
+      "default": false
+    },
+    "satellite": {
+      "type": "boolean",
+      "default": false
+    },
+    "waterHeater": {
+      "type": "boolean",
+      "default": false
+    },
+    "generator": {
+      "type": "boolean",
+      "default": false
+    },
+    "solarPanels": {
+      "type": "boolean",
+      "default": false
+    },
+    "storage": {
+      "type": "boolean",
+      "default": false
+    },
+    "maidRoom": {
+      "type": "boolean",
+      "default": false
+    },
+    "studyRoom": {
+      "type": "boolean",
+      "default": false
+    },
+    "guestRoom": {
+      "type": "boolean",
+      "default": false
+    },
+    "terrace": {
+      "type": "boolean",
+      "default": false
+    },
+    "rooftop": {
+      "type": "boolean",
+      "default": false
+    },
+    "basement": {
+      "type": "boolean",
+      "default": false
+    },
+    "attic": {
+      "type": "boolean",
+      "default": false
+    },
+    "fireplace": {
+      "type": "boolean",
+      "default": false
+    },
+    "jacuzzi": {
+      "type": "boolean",
+      "default": false
+    },
+    "sauna": {
+      "type": "boolean",
+      "default": false
+    },
+    "wineCellar": {
+      "type": "boolean",
+      "default": false
+    },
+    "homeTheater": {
+      "type": "boolean",
+      "default": false
+    },
+    "library": {
+      "type": "boolean",
+      "default": false
+    },
+    "office": {
+      "type": "boolean",
+      "default": false
+    },
+    "playroom": {
+      "type": "boolean",
+      "default": false
+    },
+    "laundry": {
+      "type": "boolean",
+      "default": false
+    },
+    "kitchenType": {
+      "type": "enumeration",
+      "enum": ["open", "closed", "semi-open"],
+      "default": "closed"
+    },
+    "kitchenAppliances": {
+      "type": "json"
+    },
+    "bathroomFeatures": {
+      "type": "json"
+    },
+    "flooring": {
+      "type": "enumeration",
+      "enum": ["marble", "tile", "wood", "carpet", "concrete", "mixed"],
+      "multiple": true
+    },
+    "windows": {
+      "type": "enumeration",
+      "enum": ["double-glazed", "single-glazed", "triple-glazed"],
+      "default": "single-glazed"
+    },
+    "doors": {
+      "type": "enumeration",
+      "enum": ["wood", "metal", "glass", "mixed"],
+      "default": "wood"
+    },
+    "ceilingHeight": {
+      "type": "decimal",
+      "min": 0
+    },
+    "orientation": {
+      "type": "enumeration",
+      "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]
+    },
+    "energyRating": {
+      "type": "enumeration",
+      "enum": ["A", "B", "C", "D", "E", "F", "G"],
+      "default": "C"
+    },
+    "maintenanceFee": {
+      "type": "decimal",
+      "min": 0
+    },
+    "maintenanceFeePeriod": {
+      "type": "enumeration",
+      "enum": ["monthly", "quarterly", "yearly"],
+      "default": "monthly"
+    },
+    "propertyTax": {
+      "type": "decimal",
+      "min": 0
+    },
+    "insurance": {
+      "type": "decimal",
+      "min": 0
+    },
+    "utilities": {
+      "type": "json"
+    },
+    "nearbyAmenities": {
+      "type": "json"
+    },
+    "transportation": {
+      "type": "json"
+    },
+    "schools": {
+      "type": "json"
+    },
+    "hospitals": {
+      "type": "json"
+    },
+    "shopping": {
+      "type": "json"
+    },
+    "restaurants": {
+      "type": "json"
+    },
+    "entertainment": {
+      "type": "json"
+    },
+    "sports": {
+      "type": "json"
+    },
+    "cultural": {
+      "type": "json"
+    },
+    "religious": {
+      "type": "json"
+    },
+    "government": {
+      "type": "json"
+    },
+    "business": {
+      "type": "json"
+    },
+    "financial": {
+      "type": "json"
+    },
+    "legal": {
+      "type": "json"
+    },
+    "technical": {
+      "type": "json"
+    },
+    "marketing": {
+      "type": "json"
+    },
+    "virtualTour": {
+      "type": "string"
+    },
+    "videoUrl": {
+      "type": "string"
+    },
+    "floorPlan": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "documents": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["files"]
+    },
+    "availabilityDate": {
+      "type": "date"
+    },
+    "inspectionDate": {
+      "type": "datetime"
+    },
+    "openHouse": {
+      "type": "json"
+    },
+    "priceHistory": {
+      "type": "json"
+    },
+    "marketAnalysis": {
+      "type": "json"
+    },
+    "investmentPotential": {
+      "type": "json"
+    },
+    "rentalYield": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "capitalGrowth": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "notes": {
+      "type": "text"
+    },
+    "internalNotes": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "seoTitle": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "seoDescription": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "seoKeywords": {
+      "type": "string"
+    },
+    "views": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "favorites": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "inquiries": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "lastViewed": {
+      "type": "datetime"
+    },
+    "featuredUntil": {
+      "type": "datetime"
+    },
+    "promoted": {
+      "type": "boolean",
+      "default": false
+    },
+    "promotedUntil": {
+      "type": "datetime"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "max": 100
+    }
+  }
+}

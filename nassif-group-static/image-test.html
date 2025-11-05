@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .image-test { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        img { max-width: 200px; height: auto; margin: 10px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Image Loading Test</h1>
+    
+    <div class="image-test">
+        <h3>Test 1: Direct Image Paths</h3>
+        <p>Testing if images exist in uploads folder:</p>
+        
+        <div>
+            <strong>Simplex Image:</strong><br>
+            <img src="uploads/colina_Simplex_870135b6ba.jpg" alt="Simplex" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <span id="status-simplex"></span>
+        </div>
+        
+        <div>
+            <strong>Duplex Image:</strong><br>
+            <img src="uploads/bouar_84f7def137.jpg" alt="Duplex" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <span id="status-duplex"></span>
+        </div>
+        
+        <div>
+            <strong>Shops Image:</strong><br>
+            <img src="uploads/depositphotos_45227311_stock_photo_modern_real_estate_6e12e07bdc.jpg" alt="Shops" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <span id="status-shops"></span>
+        </div>
+    </div>
+
+    <div class="image-test">
+        <h3>Test 2: JavaScript Data</h3>
+        <div id="js-images"></div>
+    </div>
+
+    <div class="image-test">
+        <h3>Test 3: File System Check</h3>
+        <div id="file-check"></div>
+    </div>
+
+    <script>
+        function showStatus(img, status) {
+            const span = document.getElementById('status-' + img.alt.toLowerCase());
+            if (span) {
+                span.textContent = status === 'success' ? '✅ Loaded' : '❌ Failed to load';
+                span.className = status;
+            }
+        }
+
+        // Test JavaScript data
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Testing JavaScript data...');
+            
+            // Test if embedded data exists
+            if (typeof EMBEDDED_APARTMENTS !== 'undefined') {
+                console.log('✅ EMBEDDED_APARTMENTS found:', EMBEDDED_APARTMENTS.length);
+                
+                const jsContainer = document.getElementById('js-images');
+                jsContainer.innerHTML = '<h4>✅ Embedded data loaded successfully!</h4>';
+                
+                // Show first apartment image
+                if (EMBEDDED_APARTMENTS.length > 0) {
+                    const firstApt = EMBEDDED_APARTMENTS[0];
+                    jsContainer.innerHTML += `
+                        <p><strong>First apartment:</strong> ${firstApt.name}</p>
+                        <p><strong>Image path:</strong> ${firstApt.mainImage}</p>
+                        <img src="${firstApt.mainImage}" alt="First apartment" style="max-width: 200px;">
+                    `;
+                }
+            } else {
+                console.log('❌ EMBEDDED_APARTMENTS not found');
+                document.getElementById('js-images').innerHTML = '<h4>❌ Embedded data not loaded</h4>';
+            }
+            
+            // Test file system
+            testFileSystem();
+        });
+
+        function testFileSystem() {
+            const fileCheck = document.getElementById('file-check');
+            fileCheck.innerHTML = '<p>Testing file system access...</p>';
+            
+            // Try to fetch a known file
+            fetch('uploads/colina_Simplex_870135b6ba.jpg')
+                .then(response => {
+                    if (response.ok) {
+                        fileCheck.innerHTML = '<p class="success">✅ File system access working - can fetch images</p>';
+                    } else {
+                        fileCheck.innerHTML = '<p class="error">❌ File system access failed - cannot fetch images</p>';
+                    }
+                })
+                .catch(error => {
+                    fileCheck.innerHTML = `<p class="error">❌ File system access error: ${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>

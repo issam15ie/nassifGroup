@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Data Editor - Nassif Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .json-editor {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .json-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .json-section h5 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        .btn-download {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-database text-primary"></i>
+                    Website Data Editor
+                </h1>
+                <p class="text-muted">Edit your website data in JSON format. Changes will be saved to <code>data/website-data.json</code></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="json-section">
+                    <h5><i class="fas fa-building"></i> Projects Data</h5>
+                    <p class="text-muted small">Edit project information, property types, and pricing</p>
+                    <textarea id="projects-json" class="form-control json-editor" rows="20" placeholder="Loading projects data..."></textarea>
+                </div>
+
+                <div class="json-section">
+                    <h5><i class="fas fa-home"></i> Property Types Data</h5>
+                    <p class="text-muted small">Edit property type definitions and features</p>
+                    <textarea id="property-types-json" class="form-control json-editor" rows="15" placeholder="Loading property types data..."></textarea>
+                </div>
+
+                <div class="json-section">
+                    <h5><i class="fas fa-key"></i> Apartments Data</h5>
+                    <p class="text-muted small">Edit individual apartment listings (featured properties removed)</p>
+                    <textarea id="apartments-json" class="form-control json-editor" rows="15" placeholder="Loading apartments data..."></textarea>
+                </div>
+
+                <div class="json-section">
+                    <h5><i class="fas fa-cog"></i> Website Settings</h5>
+                    <p class="text-muted small">Edit website configuration and contact information</p>
+                    <textarea id="settings-json" class="form-control json-editor" rows="10" placeholder="Loading settings data..."></textarea>
+                </div>
+
+                <div class="text-center mb-4">
+                    <button id="save-all-btn" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> Save All Changes
+                    </button>
+                    <button id="reload-btn" class="btn btn-secondary btn-lg ms-2">
+                        <i class="fas fa-refresh"></i> Reload Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Button -->
+    <button id="download-btn" class="btn btn-primary btn-download">
+        <i class="fas fa-download"></i> Download JSON
+    </button>
+
+    <script>
+        let websiteData = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWebsiteData();
+            
+            // Event listeners
+            document.getElementById('save-all-btn').addEventListener('click', saveAllData);
+            document.getElementById('reload-btn').addEventListener('click', loadWebsiteData);
+            document.getElementById('download-btn').addEventListener('click', downloadJSON);
+        });
+
+        async function loadWebsiteData() {
+            try {
+                const response = await fetch('./data/website-data.json');
+                websiteData = await response.json();
+                
+                // Populate textareas
+                document.getElementById('projects-json').value = JSON.stringify(websiteData.projects, null, 2);
+                document.getElementById('property-types-json').value = JSON.stringify(websiteData.propertyTypes, null, 2);
+                document.getElementById('apartments-json').value = JSON.stringify(websiteData.apartments, null, 2);
+                document.getElementById('settings-json').value = JSON.stringify(websiteData.settings, null, 2);
+                
+                console.log('✅ Website data loaded successfully');
+            } catch (error) {
+                console.error('❌ Failed to load website data:', error);
+                alert('Failed to load website data. Please check if the JSON file exists.');
+            }
+        }
+
+        function saveAllData() {
+            try {
+                // Parse JSON from textareas
+                const projects = JSON.parse(document.getElementById('projects-json').value);
+                const propertyTypes = JSON.parse(document.getElementById('property-types-json').value);
+                const apartments = JSON.parse(document.getElementById('apartments-json').value);
+                const settings = JSON.parse(document.getElementById('settings-json').value);
+                
+                // Update website data
+                websiteData.projects = projects;
+                websiteData.propertyTypes = propertyTypes;
+                websiteData.apartments = apartments;
+                websiteData.settings = settings;
+                
+                // Create download link
+                const dataStr = JSON.stringify(websiteData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'website-data.json';
+                link.click();
+                
+                // Clean up
+                URL.revokeObjectURL(url);
+                
+                alert('✅ Data saved! Please replace the file in data/website-data.json with the downloaded file.');
+                
+            } catch (error) {
+                console.error('❌ Failed to save data:', error);
+                alert('❌ Failed to save data. Please check your JSON syntax.');
+            }
+        }
+
+        function downloadJSON() {
+            if (!websiteData) {
+                alert('Please load data first.');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(websiteData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'website-data.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -140,6 +140,34 @@ module.exports = {
           conditions: [],
           role: publicRole.id,
         },
+        {
+          action: 'api::unit.unit.find',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::unit.unit.findOne',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::site-setting.site-setting.find',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
+        {
+          action: 'api::contact.contact.sendMessage',
+          subject: null,
+          properties: {},
+          conditions: [],
+          role: publicRole.id,
+        },
       ];
 
       // Create or update permissions

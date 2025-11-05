@@ -1,0 +1,84 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Settings",
+    "description": "Global website settings and configurations"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "homePageBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {}
+    },
+    "servicesPageBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {}
+    },
+    "aboutPageBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {}
+    },
+    "contactPageBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {}
+    },
+    "blogPageBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {}
+    },
+    "siteName": {
+      "type": "string",
+      "default": "Nassif Group",
+      "pluginOptions": {}
+    },
+    "siteTagline": {
+      "type": "string",
+      "default": "Premium Real Estate Development",
+      "pluginOptions": {}
+    },
+    "contactEmail": {
+      "type": "email",
+      "pluginOptions": {}
+    },
+    "contactPhone": {
+      "type": "string",
+      "pluginOptions": {}
+    },
+    "whatsappNumber": {
+      "type": "string",
+      "description": "WhatsApp number for contact buttons",
+      "pluginOptions": {}
+    }
+  }
+}

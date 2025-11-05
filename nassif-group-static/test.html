@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Website Test - Nassif Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>🧪 Static Website Test</h1>
+        <p>This page tests if the static data is loading correctly.</p>
+        
+        <div id="test-results" class="mt-4">
+            <div class="alert alert-info">
+                <i class="fas fa-spinner fa-spin"></i> Loading test data...
+            </div>
+        </div>
+    </div>
+
+    <script src="js/static-api.js"></script>
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                // Wait for data to load
+                await new Promise(resolve => {
+                    const checkData = () => {
+                        if (window.strapiAPI && strapiAPI.projects.length > 0) {
+                            resolve();
+                        } else {
+                            setTimeout(checkData, 100);
+                        }
+                    };
+                    checkData();
+                });
+                
+                const api = window.strapiAPI;
+                
+                // Test projects
+                const projects = api.getProjects();
+                const apartments = api.getFeaturedApartments();
+                const propertyTypes = api.getPropertyTypes();
+                
+                let html = `
+                    <div class="alert alert-success">
+                        <h4><i class="fas fa-check-circle"></i> All Tests Passed!</h4>
+                        <ul class="mb-0">
+                            <li><strong>Projects:</strong> ${projects.data.length} loaded</li>
+                            <li><strong>Featured Apartments:</strong> ${apartments.data.length} loaded</li>
+                            <li><strong>Property Types:</strong> ${propertyTypes.data.length} loaded</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>📊 Sample Data</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Projects</h5>
+                            <ul>
+                                ${projects.data.slice(0, 3).map(p => `<li>${p.name}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Featured Apartments</h5>
+                            <ul>
+                                ${apartments.data.slice(0, 3).map(a => `<li>${a.name} - $${a.price}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Property Types</h5>
+                            <ul>
+                                ${propertyTypes.data.map(t => `<li>${t.displayName}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="index.html" class="btn btn-primary">🏠 Go to Homepage</a>
+                        <a href="services.html" class="btn btn-success">🏢 Go to Services</a>
+                    </div>
+                `;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Test Failed</h4>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>

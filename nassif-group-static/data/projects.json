@@ -1,0 +1,148 @@
+[
+  {
+    "id": 1,
+    "name": "bouar 638 (colina)",
+    "slug": "bouar-638-colina",
+    "description": "Modern residential development",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex",
+      "shops"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "shayle 93",
+    "slug": "Sehayleh",
+    "description": "Modern residential development",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "zouk 111",
+    "slug": "zouk-111",
+    "description": "Modern residential development",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "zouk 2324",
+    "slug": "zouk-2324",
+    "description": "Modern residential development",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Fatqa 315",
+    "slug": "fatqa-315",
+    "description": "Modern residential development",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Mejdlaya 246",
+    "slug": "mejdlaya-246",
+    "description": "Modern residential development",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "bouar 673",
+    "slug": "bouar-673",
+    "description": "Modern residential development",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "duplex",
+      "simplex",
+      "shops"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "test",
+    "slug": "test",
+    "description": "Modern residential development",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": [
+      "simplex",
+      "duplex"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Bouar 638",
+    "slug": "bouar-638",
+    "description": "Premium residential project in Colina with various unit types",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": []
+  },
+  {
+    "id": 10,
+    "name": "Shayle 93",
+    "slug": "shayle-93",
+    "description": "Modern residential development in Shayle area",
+    "status": "available",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": []
+  },
+  {
+    "id": 11,
+    "name": "Fat2a 315",
+    "slug": "fat2a-315",
+    "description": "Completed residential project in Fat2a",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": []
+  },
+  {
+    "id": 12,
+    "name": "Mejlaya 246",
+    "slug": "mejlaya-246",
+    "description": "Completed residential project in Mejlaya",
+    "status": "sold_out",
+    "location": "Unknown Location",
+    "mainImage": "/uploads/default-project.jpg",
+    "propertyTypes": []
+  }
+]

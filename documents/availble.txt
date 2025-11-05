@@ -1,0 +1,12 @@
+availble:
+name : bouar 638 (colina)  All(100->165m)  simplex 100->145 m douplex 105->165 m shops 50->130 m 
+
+name : shayle 93  	   All (60-270m) simplex (60->170) douplex(110->270)
+
+soldout:
+
+fat2a 315 
+mejlaya 246
+bouar 673 
+zouk 111 
+zouk 2324

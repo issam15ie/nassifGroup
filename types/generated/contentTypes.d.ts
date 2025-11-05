@@ -960,27 +960,76 @@ export interface ApiProjectProject extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::project.project', 'name'> & Attribute.Required;
-    description: Attribute.Text;
+    description: Attribute.Text &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     status: Attribute.Enumeration<['available', 'sold_out']> &
       Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
       Attribute.DefaultTo<'available'>;
+    mainImage: Attribute.Media &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    images: Attribute.Media &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    priority: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
     units: Attribute.Relation<
       'api::project.project',
       'oneToMany',
       'api::unit.unit'
     >;
-    mainImage: Attribute.Media;
-    images: Attribute.Media;
-    priority: Attribute.Integer & Attribute.DefaultTo<0>;
-    propertyTypeInfo: Attribute.JSON;
     propertyTypes: Attribute.Relation<
       'api::project.project',
       'manyToMany',
       'api::property-type.property-type'
     >;
+    propertyTypeOverrides: Attribute.JSON &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    location: Attribute.Text &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -996,6 +1045,12 @@ export interface ApiProjectProject extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::project.project',
+      'oneToMany',
+      'api::project.project'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -1028,6 +1083,12 @@ export interface ApiPropertyTypePropertyType extends Schema.CollectionType {
       'api::project.project'
     >;
     priority: Attribute.Integer & Attribute.DefaultTo<0>;
+    minSize: Attribute.Integer;
+    maxSize: Attribute.Integer;
+    sizeUnit: Attribute.String & Attribute.DefaultTo<'m\u00B2'>;
+    priceRange: Attribute.String;
+    status: Attribute.Enumeration<['available', 'sold', 'coming_soon']> &
+      Attribute.DefaultTo<'available'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1039,6 +1100,46 @@ export interface ApiPropertyTypePropertyType extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::property-type.property-type',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSiteSettingSiteSetting extends Schema.SingleType {
+  collectionName: 'site_settings';
+  info: {
+    singularName: 'site-setting';
+    pluralName: 'site-settings';
+    displayName: 'Site Settings';
+    description: 'Global website settings and configurations';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    homePageBackgroundImage: Attribute.Media;
+    servicesPageBackgroundImage: Attribute.Media;
+    aboutPageBackgroundImage: Attribute.Media;
+    contactPageBackgroundImage: Attribute.Media;
+    blogPageBackgroundImage: Attribute.Media;
+    siteName: Attribute.String & Attribute.DefaultTo<'Nassif Group'>;
+    siteTagline: Attribute.String &
+      Attribute.DefaultTo<'Premium Real Estate Development'>;
+    contactEmail: Attribute.Email;
+    contactPhone: Attribute.String;
+    whatsappNumber: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::site-setting.site-setting',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::site-setting.site-setting',
       'oneToOne',
       'admin::user'
     > &
@@ -1066,14 +1167,14 @@ export interface ApiUnitUnit extends Schema.CollectionType {
     status: Attribute.Enumeration<['available', 'sold']> &
       Attribute.Required &
       Attribute.DefaultTo<'available'>;
+    price: Attribute.Decimal;
+    description: Attribute.Text;
+    images: Attribute.Media;
     project: Attribute.Relation<
       'api::unit.unit',
       'manyToOne',
       'api::project.project'
     >;
-    price: Attribute.Decimal;
-    description: Attribute.Text;
-    images: Attribute.Media;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1103,6 +1204,7 @@ declare module '@strapi/types' {
       'api::apartment.apartment': ApiApartmentApartment;
       'api::project.project': ApiProjectProject;
       'api::property-type.property-type': ApiPropertyTypePropertyType;
+      'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'api::unit.unit': ApiUnitUnit;
     }
   }

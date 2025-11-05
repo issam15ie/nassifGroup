@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "simplex",
+    "displayName": "simplex",
+    "description": "Modern simplex apartments with open layouts and contemporary design"
+  },
+  {
+    "id": 2,
+    "name": "duplex",
+    "displayName": "duplex",
+    "description": "Spacious duplex apartments with two levels and premium finishes"
+  },
+  {
+    "id": 3,
+    "name": "shops",
+    "displayName": "Shops",
+    "description": "Commercial spaces perfect for retail and business use"
+  }
+]

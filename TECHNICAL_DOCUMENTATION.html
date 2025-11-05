@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nassif Group Website - Technical Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #2980b9;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #8e44ad;
+            margin-top: 20px;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🏢 Nassif Group Website - Technical Documentation</h1>
+
+<div class="section">
+<h2>📋 Project Overview</h2>
+<p><strong>Project Name:</strong> Nassif Group Real Estate Website<br>
+<strong>Type:</strong> Full-stack web application with headless CMS<br>
+<strong>Architecture:</strong> Single-server deployment (Strapi + Frontend)<br>
+<strong>Purpose:</strong> Real estate property management and showcase platform</p>
+</div>
+
+<div class="section">
+<h2>🛠️ Technology Stack</h2>
+
+<h3>Backend Framework</h3>
+<ul>
+<li><strong>Strapi 4.15.5</strong> - Headless CMS and API server</li>
+<li><strong>Node.js v22.17.1</strong> - JavaScript runtime environment</li>
+<li><strong>SQLite</strong> - Database (development environment)</li>
+<li><strong>Koa.js</strong> - Web framework (built into Strapi)</li>
+</ul>
+
+<h3>Frontend Technologies</h3>
+<ul>
+<li><strong>HTML5</strong> - Semantic markup</li>
+<li><strong>CSS3</strong> - Custom styling with modern features</li>
+<li><strong>Vanilla JavaScript (ES6+)</strong> - No frontend frameworks</li>
+<li><strong>Bootstrap 5.3.0</strong> - UI components and responsive grid</li>
+<li><strong>FontAwesome</strong> - Icon library</li>
+</ul>
+
+<h3>Development Tools</h3>
+<ul>
+<li><strong>npm</strong> - Package manager</li>
+<li><strong>Git</strong> - Version control</li>
+<li><strong>PowerShell</strong> - Command line interface</li>
+<li><strong>Cursor/VS Code</strong> - Code editor</li>
+</ul>
+
+<h3>Deployment & Hosting</h3>
+<ul>
+<li><strong>Render.com</strong> - Primary hosting platform</li>
+<li><strong>GitHub</strong> - Code repository</li>
+<li><strong>Netlify</strong> - Alternative hosting (user preference)</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🏗️ Project Structure</h2>
+<pre>
+nassifGroup/
+├── 📁 config/                          # Strapi Configuration
+│   ├── database.js                     # Database connection settings
+│   ├── middlewares.js                  # Middleware configuration
+│   ├── server.js                       # Server configuration
+│   ├── admin.js                        # Admin panel settings
+│   └── plugins.js                      # Plugin configurations
+│
+├── 📁 src/                             # Strapi Backend Code
+│   ├── api/                            # API Content Types
+│   │   ├── apartment/                  # Apartment content type
+│   │   ├── project/                    # Project content type
+│   │   └── property-type/              # Property Type content type
+│   ├── middlewares/
+│   │   └── custom-index.js             # Custom redirect middleware
+│   └── index.js                        # Strapi entry point
+│
+├── 📁 public/                          # Frontend Files (Served by Strapi)
+│   ├── index.html                      # Homepage
+│   ├── services.html                   # Property listings page
+│   ├── about.html                      # Company information
+│   ├── blog.html                       # Blog/news page
+│   ├── contact.html                    # Contact form
+│   ├── styles.css                      # Main stylesheet
+│   ├── script.js                       # Main JavaScript file
+│   ├── js/
+│   │   └── strapi-api.js              # API communication layer
+│   ├── uploads/                        # Media files
+│   ├── favicon.ico                     # Site favicon
+│   └── *.png, *.svg                   # Logo and brand assets
+│
+├── 📁 scripts/                         # Utility Scripts
+├── 📁 nassif-group-static/             # Static Website Alternative
+├── package.json                        # Dependencies and scripts
+├── .env.development                    # Environment variables
+├── .tmp/data.db                       # SQLite database file
+└── README.md                          # Project documentation
+</pre>
+</div>
+
+<div class="section">
+<h2>🗄️ Database Schema</h2>
+
+<h3>Content Types</h3>
+
+<h4>1. Projects</h4>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td>name</td><td>String</td><td>Project name (e.g., "bouar 638 (colina)")</td></tr>
+<tr><td>slug</td><td>String</td><td>URL-friendly identifier</td></tr>
+<tr><td>description</td><td>Text</td><td>Project description</td></tr>
+<tr><td>location</td><td>String</td><td>Geographic location</td></tr>
+<tr><td>status</td><td>Enum</td><td>available, sold_out, coming_soon</td></tr>
+<tr><td>mainImage</td><td>Media</td><td>Primary project image</td></tr>
+<tr><td>images</td><td>Media[]</td><td>Additional project images</td></tr>
+<tr><td>propertyTypes</td><td>Relation</td><td>Many-to-many with PropertyType</td></tr>
+<tr><td>propertyTypeInfo</td><td>JSON</td><td>Detailed property type information</td></tr>
+</table>
+
+<h4>2. Property Types</h4>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td>name</td><td>String</td><td>Type name (simplex, duplex, shops)</td></tr>
+<tr><td>displayName</td><td>String</td><td>User-friendly name</td></tr>
+<tr><td>description</td><td>Text</td><td>Type description</td></tr>
+<tr><td>minSize</td><td>Integer</td><td>Minimum size in m²</td></tr>
+<tr><td>maxSize</td><td>Integer</td><td>Maximum size in m²</td></tr>
+<tr><td>sizeUnit</td><td>String</td><td>Unit (m²)</td></tr>
+<tr><td>image</td><td>Media</td><td>Representative image</td></tr>
+<tr><td>icon</td><td>String</td><td>FontAwesome icon class</td></tr>
+<tr><td>priority</td><td>Integer</td><td>Display order</td></tr>
+<tr><td>features</td><td>JSON</td><td>Array of features</td></tr>
+</table>
+
+<h4>3. Apartments</h4>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td>name</td><td>String</td><td>Apartment name</td></tr>
+<tr><td>project</td><td>Relation</td><td>Many-to-one with Project</td></tr>
+<tr><td>propertyType</td><td>Relation</td><td>Many-to-one with PropertyType</td></tr>
+<tr><td>status</td><td>Enum</td><td>available, sold, reserved</td></tr>
+<tr><td>price</td><td>Decimal</td><td>Price value</td></tr>
+<tr><td>currency</td><td>String</td><td>Currency code ($, €, etc.)</td></tr>
+<tr><td>bedrooms</td><td>Integer</td><td>Number of bedrooms</td></tr>
+<tr><td>bathrooms</td><td>Integer</td><td>Number of bathrooms</td></tr>
+<tr><td>area</td><td>Decimal</td><td>Floor area</td></tr>
+<tr><td>areaUnit</td><td>String</td><td>Area unit (m², sqft)</td></tr>
+<tr><td>description</td><td>Text</td><td>Apartment description</td></tr>
+<tr><td>mainImage</td><td>Media</td><td>Primary apartment image</td></tr>
+<tr><td>amenities</td><td>JSON</td><td>Available amenities</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>🌐 API Architecture</h2>
+
+<h3>Base URL Structure</h3>
+<ul>
+<li><strong>Development:</strong> <code>http://localhost:1337/api</code></li>
+<li><strong>Production:</strong> <code>https://your-app.onrender.com/api</code></li>
+</ul>
+
+<h3>Main Endpoints</h3>
+
+<h4>Projects API</h4>
+<pre>
+GET /api/projects                        # Get all projects
+GET /api/projects/:id                    # Get specific project
+GET /api/projects?populate=propertyTypes # Get projects with relations
+</pre>
+
+<h4>Property Types API</h4>
+<pre>
+GET /api/property-types                  # Get all property types
+GET /api/property-types/:id              # Get specific type
+</pre>
+
+<h4>Apartments API</h4>
+<pre>
+GET /api/apartments                      # Get all apartments
+GET /api/apartments/:id                  # Get specific apartment
+GET /api/apartments?filters[project][$eq]=:project # Filter by project
+GET /api/apartments?filters[propertyType][$eq]=:type # Filter by type
+</pre>
+
+<h3>Custom Routes</h3>
+<ul>
+<li><strong>Featured Apartments:</strong> <code>/api/apartments/featured</code></li>
+<li><strong>Project Statistics:</strong> <code>/api/apartments/stats</code></li>
+<li><strong>Location-based:</strong> <code>/api/apartments/location/:location</code></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🎨 Frontend Architecture</h2>
+
+<h3>Page Structure</h3>
+<ol>
+<li><strong>Homepage (index.html)</strong>
+   <ul>
+   <li>Hero section with company branding</li>
+   <li>Company highlights</li>
+   <li>About section preview</li>
+   <li>Contact information</li>
+   </ul>
+</li>
+
+<li><strong>Services (services.html)</strong>
+   <ul>
+   <li>Project listings with filtering</li>
+   <li>Property type cards</li>
+   <li>Dynamic content loading</li>
+   <li>Interactive property selection</li>
+   </ul>
+</li>
+
+<li><strong>About (about.html)</strong>
+   <ul>
+   <li>Company story and mission</li>
+   <li>Team member profiles</li>
+   <li>Company statistics and achievements</li>
+   </ul>
+</li>
+
+<li><strong>Blog (blog.html)</strong>
+   <ul>
+   <li>Featured blog posts</li>
+   <li>Category-based organization</li>
+   <li>Real estate market insights</li>
+   </ul>
+</li>
+
+<li><strong>Contact (contact.html)</strong>
+   <ul>
+   <li>Contact form</li>
+   <li>Company location and details</li>
+   <li>Interactive elements</li>
+   </ul>
+</li>
+</ol>
+
+<h3>JavaScript Architecture</h3>
+
+<h4>Core Files</h4>
+<ul>
+<li><strong>script.js</strong> - Main application logic</li>
+<li><strong>strapi-api.js</strong> - API communication layer</li>
+</ul>
+
+<h4>Key Functions</h4>
+<pre>
+// API Communication
+class StrapiAPI {
+  constructor(baseURL = '/api')
+  async getProjects()
+  async getPropertyTypes()
+  async getApartments()
+  async getApartmentsByProjectAndType(project, propertyType)
+}
+
+// UI Management
+function loadProjectsAndPropertyTypes()
+function createPropertyCard(project, propertyType, info)
+function filterPropertiesByProject(projectName)
+function showApartmentModal(apartmentData)
+</pre>
+
+<h3>CSS Architecture</h3>
+<ul>
+<li>Mobile-first responsive design</li>
+<li>Custom CSS variables for theming</li>
+<li>Bootstrap 5 grid system</li>
+<li>Custom component styling</li>
+<li>Hover effects and animations</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🔧 Development Workflow</h2>
+
+<h3>Local Development Setup</h3>
+<pre>
+# Clone repository
+git clone &lt;repository-url&gt;
+cd nassifGroup
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run develop
+
+# Access points
+# Frontend: http://localhost:1337/
+# Admin: http://localhost:1337/admin
+# API: http://localhost:1337/api
+</pre>
+
+<h3>Environment Configuration</h3>
+<pre>
+# .env.development
+HOST=0.0.0.0
+PORT=1337
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=.tmp/data.db
+JWT_SECRET=&lt;your-jwt-secret&gt;
+ADMIN_JWT_SECRET=&lt;your-admin-jwt-secret&gt;
+APP_KEYS=&lt;your-app-keys&gt;
+</pre>
+
+<h3>Build Commands</h3>
+<pre>
+npm run develop    # Development server with auto-reload
+npm run build      # Build for production
+npm run start      # Start production server
+</pre>
+</div>
+
+<div class="section">
+<h2>🚀 Deployment Guide</h2>
+
+<h3>Render.com Deployment</h3>
+
+<h4>Build Configuration</h4>
+<ul>
+<li><strong>Build Command:</strong> <code>npm install && npm run build</code></li>
+<li><strong>Start Command:</strong> <code>npm run start</code></li>
+<li><strong>Node Version:</strong> 22.17.1</li>
+<li><strong>Environment:</strong> Node.js</li>
+</ul>
+
+<h4>Environment Variables</h4>
+<pre>
+NODE_ENV=production
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=/opt/render/project/src/.tmp/data.db
+HOST=0.0.0.0
+PORT=10000
+</pre>
+
+<h4>File Structure for Deployment</h4>
+<pre>
+public/           # Frontend files served by Strapi
+├── *.html       # All HTML pages
+├── *.css        # Stylesheets
+├── *.js         # JavaScript files
+├── js/          # Additional JS modules
+└── uploads/     # Media assets
+</pre>
+
+<h3>Alternative: Static Deployment</h3>
+<p>The project includes a static version in <code>nassif-group-static/</code> that can be deployed to:</p>
+<ul>
+<li><strong>Netlify</strong> (drag & drop deployment)</li>
+<li><strong>Vercel</strong></li>
+<li><strong>GitHub Pages</strong></li>
+<li><strong>Firebase Hosting</strong></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🔒 Security Considerations</h2>
+
+<h3>Content Security Policy (CSP)</h3>
+<pre>
+// Strapi's built-in CSP allows:
+img-src: 'self' data: blob: https://market-assets.strapi.io
+script-src: 'self'
+style-src: 'self' 'unsafe-inline'
+</pre>
+
+<h3>API Security</h3>
+<ul>
+<li><strong>CORS enabled</strong> for frontend domain</li>
+<li><strong>JWT authentication</strong> for admin access</li>
+<li><strong>Rate limiting</strong> on API endpoints</li>
+<li><strong>Input validation</strong> on all content types</li>
+</ul>
+
+<h3>Data Protection</h3>
+<ul>
+<li><strong>Local image storage</strong> (no external CDNs)</li>
+<li><strong>SQLite database</strong> with file-based storage</li>
+<li><strong>Environment variable protection</strong> for secrets</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🧪 Testing & Quality Assurance</h2>
+
+<h3>Manual Testing Checklist</h3>
+<ul>
+<li>☐ All pages load correctly</li>
+<li>☐ API endpoints return expected data</li>
+<li>☐ Image loading and CSP compliance</li>
+<li>☐ Mobile responsiveness</li>
+<li>☐ Cross-browser compatibility</li>
+<li>☐ Form functionality</li>
+<li>☐ Search and filtering features</li>
+</ul>
+
+<h3>Performance Considerations</h3>
+<ul>
+<li><strong>Image optimization</strong> (local storage)</li>
+<li><strong>Minimal external dependencies</strong></li>
+<li><strong>Efficient database queries</strong></li>
+<li><strong>CSS and JS minification</strong> (production)</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>📊 Monitoring & Analytics</h2>
+
+<h3>Server Monitoring</h3>
+<ul>
+<li><strong>Strapi built-in logging</strong></li>
+<li><strong>Performance metrics</strong> via Render dashboard</li>
+<li><strong>Error tracking</strong> through console logs</li>
+</ul>
+
+<h3>Frontend Analytics</h3>
+<ul>
+<li><strong>User interaction tracking</strong> (can be added)</li>
+<li><strong>Page performance monitoring</strong></li>
+<li><strong>API response time tracking</strong></li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🔄 Maintenance & Updates</h2>
+
+<h3>Regular Maintenance Tasks</h3>
+<ol>
+<li><strong>Database backup</strong> (SQLite file)</li>
+<li><strong>Dependency updates</strong> (<code>npm audit</code>)</li>
+<li><strong>Content updates</strong> via Strapi admin</li>
+<li><strong>Image optimization</strong> and cleanup</li>
+<li><strong>Performance monitoring</strong></li>
+</ol>
+
+<h3>Update Procedures</h3>
+<pre>
+# Update dependencies
+npm update
+
+# Update Strapi
+npm install @strapi/strapi@latest
+
+# Rebuild after updates
+npm run build
+</pre>
+</div>
+
+<div class="section">
+<h2>📞 Support & Troubleshooting</h2>
+
+<h3>Common Issues</h3>
+<ol>
+<li><strong>Port 1337 in use:</strong> Kill existing processes or change port</li>
+<li><strong>CSP violations:</strong> Ensure all assets are local or whitelisted</li>
+<li><strong>Database connection:</strong> Check SQLite file permissions</li>
+<li><strong>Build failures:</strong> Clear node_modules and reinstall</li>
+</ol>
+
+<h3>Debug Commands</h3>
+<pre>
+# Check running processes
+netstat -an | findstr :1337
+
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Database reset (development only)
+rm .tmp/data.db
+npm run develop
+</pre>
+</div>
+
+<div class="section">
+<h2>📈 Future Enhancements</h2>
+
+<h3>Planned Features</h3>
+<ul>
+<li>☐ Advanced search and filtering</li>
+<li>☐ User authentication system</li>
+<li>☐ Favorite properties functionality</li>
+<li>☐ Email notifications</li>
+<li>☐ Multi-language support</li>
+<li>☐ Advanced analytics dashboard</li>
+</ul>
+
+<h3>Technical Improvements</h3>
+<ul>
+<li>☐ Redis caching implementation</li>
+<li>☐ PostgreSQL migration (production)</li>
+<li>☐ CDN integration for images</li>
+<li>☐ API rate limiting</li>
+<li>☐ Automated testing suite</li>
+<li>☐ CI/CD pipeline setup</li>
+</ul>
+</div>
+
+<div class="highlight">
+<p><strong>Last Updated:</strong> September 2025<br>
+<strong>Version:</strong> 1.0.0<br>
+<strong>Documentation Status:</strong> Complete</p>
+</div>
+
+</body>
+</html>

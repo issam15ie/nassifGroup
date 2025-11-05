@@ -18,7 +18,11 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["simplex", "duplex", "shop"],
+      "enum": [
+        "simplex",
+        "duplex",
+        "shop"
+      ],
       "required": true
     },
     "size_min": {
@@ -31,15 +35,12 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["available", "sold"],
+      "enum": [
+        "available",
+        "sold"
+      ],
       "default": "available",
       "required": true
-    },
-    "project": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::project.project",
-      "inversedBy": "units"
     },
     "price": {
       "type": "decimal"
@@ -51,7 +52,15 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::project.project",
+      "inversedBy": "units"
     }
   }
 }

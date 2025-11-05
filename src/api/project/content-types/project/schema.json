@@ -10,12 +10,21 @@
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "name": {
       "type": "string",
       "required": true,
-      "unique": true
+      "unique": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "slug": {
       "type": "uid",
@@ -23,46 +32,93 @@
       "required": true
     },
     "description": {
-      "type": "text"
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "status": {
       "type": "enumeration",
-      "enum": ["available", "sold_out"],
+      "enum": [
+        "available",
+        "sold_out"
+      ],
       "default": "available",
-      "required": true
-    },
-    "units": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::unit.unit",
-      "mappedBy": "project"
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "mainImage": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "images": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "priority": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
-    "propertyTypeInfo": {
-      "type": "json",
-      "required": false
+    "units": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit.unit",
+      "mappedBy": "project",
+      "description": "PROJECT-SPECIFIC PROPERTY TYPES - Create specific units for this project (e.g., 'Simplex Bouar 638', 'Duplex Bouar 638'). Each unit can have its own size range, images, price, and description."
     },
     "propertyTypes": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::property-type.property-type",
       "inversedBy": "projects",
-      "description": "PROPERTY TYPES RELATION - Select which property types are available for this project. IMPORTANT: ORDER MATTERS - Property types display in the same order you select them here. First selected = First displayed on website. You can reorder by dragging items in the list. Tips: Select property types in the order you want them to appear, use the propertyTypeInfo JSON field to add specific details (ranges, status, images). This relation controls which property types are available for this project. Make sure to also fill the propertyTypeInfo JSON field with details."
+      "description": "GENERAL PROPERTY TYPES - Select which property types are available for this project. All property type details (images, prices, descriptions, features) are managed in the Property Types section. Simply select the types you want for this project and they will inherit all their details automatically."
+    },
+    "propertyTypeOverrides": {
+      "type": "json",
+      "required": false,
+      "description": "PROJECT-SPECIFIC OVERRIDES - Override specific property type details for this project only. Format: {'simplex': {'image': 'url', 'priceRange': 'custom range'}, 'duplex': {...}}. This allows each project to have custom images or details while keeping the general property type structure.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "location": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

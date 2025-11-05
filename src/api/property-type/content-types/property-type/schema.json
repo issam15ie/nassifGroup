@@ -14,7 +14,11 @@
   "attributes": {
     "name": {
       "type": "enumeration",
-      "enum": ["simplex", "duplex", "shops"],
+      "enum": [
+        "simplex",
+        "duplex",
+        "shops"
+      ],
       "required": true,
       "unique": true
     },
@@ -29,7 +33,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "icon": {
       "type": "string",
@@ -48,6 +54,31 @@
     "priority": {
       "type": "integer",
       "default": 0
+    },
+    "minSize": {
+      "type": "integer",
+      "description": "Minimum size in square meters"
+    },
+    "maxSize": {
+      "type": "integer",
+      "description": "Maximum size in square meters"
+    },
+    "sizeUnit": {
+      "type": "string",
+      "default": "m²"
+    },
+    "priceRange": {
+      "type": "string",
+      "description": "Price range for this property type"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "available",
+        "sold",
+        "coming_soon"
+      ],
+      "default": "available"
     }
   }
 }

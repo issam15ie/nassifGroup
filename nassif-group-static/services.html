@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Nassif Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        /* Custom styles for property type cards */
+        .property-type-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        
+        .property-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: #007bff;
+        }
+        
+        .property-type-card .card-img-top {
+            transition: all 0.3s ease;
+        }
+        
+        .property-type-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .property-type-card .card-title {
+            transition: color 0.3s ease;
+        }
+        
+        .property-type-card:hover .card-title {
+            color: #007bff !important;
+        }
+        
+        /* Project filter button hover effects */
+        .project-filter-btn {
+            transition: all 0.3s ease;
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-weight: 500;
+        }
+        
+        .project-filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Property types section header */
+        .property-types-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 10px;
+        }
+        
+        /* Search bar styling */
+        .search-input {
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        
+        /* Badge styling */
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Button hover effects */
+        .btn-outline-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,123,255,.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40,167,69,.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <img src="nassif-group-logosmall.png" alt="Nassif Group Logo" class="navbar-logo">
+                </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="services.html">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1>Our Services</h1>
+                    <p>Discover premium properties in Lebanon's most desirable locations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Services Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Search Bar -->
+                    <div class="row mb-4">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control search-input" placeholder="Search properties by project or features...">
+                            </div>
+                </div>
+            </div>
+
+                    <!-- Project Filter Buttons -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div id="project-filter-buttons" class="d-flex flex-wrap gap-2 justify-content-center">
+                                <!-- Dynamic project buttons will be inserted here -->
+            </div>
+            </div>
+        </div>
+
+                    <!-- Property Types Section Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="property-types-header text-white p-3 rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-home me-3"></i>
+                                    <div>
+                                        <h4 class="mb-0">Property Types</h4>
+                                        <p class="mb-0">Choose from our available property options</p>
+                                    </div>
+                                </div>
+                </div>
+            </div>
+                    </div>
+
+                    <!-- Property Types Container -->
+                    <div id="property-types-container" class="row">
+                        <!-- Property types will be loaded here -->
+                    </div>
+
+                    <!-- No Data Message -->
+                    <div id="no-data-message" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No properties available</h4>
+                        <p class="text-muted">Please check back later for new listings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Debug Info (Hidden by default) -->
+    <section class="py-2 bg-light" style="display: none;" id="debug-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h6>🐛 Debug Information</h6>
+                    <div id="debug-info" class="alert alert-info small">
+                        <i class="fas fa-spinner fa-spin"></i> Loading debug information...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/embedded-website-data.js"></script>
+    <script src="js/website-data-manager.js"></script>
+    <script>
+        // Global variables
+        let PROJECTS_DATA = {};
+        let PROPERTY_TYPES_DATA = {};
+        let dataManager;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Starting services page initialization...');
+            
+            // Initialize website data manager
+            dataManager = new WebsiteDataManager();
+            
+            // Wait for data to load
+            setTimeout(() => {
+                console.log('✅ Data manager initialized');
+                initializePage();
+            }, 100);
+        });
+
+        async function initializePage() {
+            try {
+                console.log('🔍 Starting page initialization...');
+                
+                // Load projects and property types
+                console.log('📊 Loading projects and property types...');
+                await loadProjectsAndPropertyTypes();
+                console.log('✅ Projects and property types loaded');
+                
+                // Create project filter buttons
+                console.log('🔘 Creating project filter buttons...');
+                createProjectFilterButtons();
+                console.log('✅ Project filter buttons created');
+                
+                // Load property types display
+                console.log('🏗️ Loading property types display...');
+                await loadPropertyTypesDisplay();
+                console.log('✅ Property types display loaded');
+                
+                // Update debug info
+                console.log('📋 Updating debug info...');
+                updateDebugInfo();
+                console.log('✅ Debug info updated');
+                
+                console.log('✅ Page initialization complete');
+                
+            } catch (error) {
+                console.error('❌ Page initialization failed:', error);
+                showNoDataMessage();
+            }
+        }
+
+        async function loadProjectsAndPropertyTypes() {
+            try {
+                const projectsResponse = await dataManager.getProjects();
+                const propertyTypesResponse = await dataManager.getPropertyTypes();
+                
+                if (projectsResponse.data && propertyTypesResponse.data) {
+                    // Process projects data
+                    PROJECTS_DATA = {};
+                    projectsResponse.data.forEach(project => {
+                        const projectData = {
+                            id: project.id,
+                            name: project.name,
+                            status: project.status,
+                            description: project.description,
+                            propertyTypeInfo: project.propertyTypeInfo || {},
+                            propertyTypes: {},
+                            propertyTypesOrder: []
+                        };
+                        
+                        // Process property types
+                        if (project.propertyTypes) {
+                            project.propertyTypes.forEach(propertyTypeName => {
+                                const typeInfo = projectData.propertyTypeInfo[propertyTypeName] || {};
+                                
+                                projectData.propertyTypes[propertyTypeName] = {
+                                    name: propertyTypeName,
+                                    displayName: propertyTypeName.charAt(0).toUpperCase() + propertyTypeName.slice(1),
+                                    range: typeInfo.range || 'N/A',
+                                    image: typeInfo.image || getDefaultImage(propertyTypeName),
+                                    description: `Modern ${propertyTypeName} properties with contemporary design`,
+                                    features: [],
+                                    status: typeInfo.status || 'available',
+                                    priority: typeInfo.priority || 999
+                                };
+                                
+                                projectData.propertyTypesOrder.push(propertyTypeName);
+                            });
+                        }
+                        
+                        PROJECTS_DATA[project.name] = projectData;
+                    });
+                    
+                    // Process property types data
+                    PROPERTY_TYPES_DATA = {};
+                    propertyTypesResponse.data.forEach(pt => {
+                        PROPERTY_TYPES_DATA[pt.name] = {
+                            id: pt.id,
+                            name: pt.name,
+                            displayName: pt.displayName,
+                            range: `${pt.minSize}-${pt.maxSize}${pt.sizeUnit}`,
+                            image: pt.image || getDefaultImage(pt.name),
+                            description: pt.description,
+                            features: pt.features || []
+                        };
+                    });
+                    
+                    console.log('✅ Projects and property types loaded:', {
+                        projects: Object.keys(PROJECTS_DATA).length,
+                        propertyTypes: Object.keys(PROPERTY_TYPES_DATA).length
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Failed to load projects and property types:', error);
+                throw error;
+            }
+        }
+
+        function createProjectFilterButtons() {
+            const container = document.getElementById('project-filter-buttons');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const projectNames = Object.keys(PROJECTS_DATA);
+            
+            projectNames.forEach((projectName, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `btn project-filter-btn ${index === 0 ? 'btn-primary' : 'btn-outline-secondary'} me-2 mb-2`;
+                button.innerHTML = `
+                    ${projectName}
+                    <span class="badge bg-success status-badge ms-2">
+                        <i class="fas fa-check"></i> AVAILABLE
+                    </span>
+                `;
+                button.onclick = () => filterByProject(projectName);
+                container.appendChild(button);
+            });
+        }
+
+        async function loadPropertyTypesDisplay() {
+            try {
+                const container = document.getElementById('property-types-container');
+                const noDataMessage = document.getElementById('no-data-message');
+                
+                if (container) {
+                    container.innerHTML = '';
+                    
+                    // Get all unique property types from all projects
+                    const allPropertyTypes = new Set();
+                    Object.values(PROJECTS_DATA).forEach(project => {
+                        project.propertyTypesOrder.forEach(type => allPropertyTypes.add(type));
+                    });
+                    
+                    if (allPropertyTypes.size > 0) {
+                        console.log(`✅ Found ${allPropertyTypes.size} property types to display`);
+                        
+                        Array.from(allPropertyTypes).forEach(propertyTypeName => {
+                            const propertyTypeCard = createPropertyTypeCard(propertyTypeName);
+                            container.appendChild(propertyTypeCard);
+                        });
+                        
+                        noDataMessage.style.display = 'none';
+                    } else {
+                        console.log('❌ No property types found');
+                        noDataMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Failed to load property types display:', error);
+                showNoDataMessage();
+            }
+        }
+
+        function filterByProject(projectName) {
+            // Update active button
+            document.querySelectorAll('#project-filter-buttons .btn').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline-secondary');
+            });
+            event.target.classList.remove('btn-outline-secondary');
+            event.target.classList.add('btn-primary');
+            
+            // Filter property types by project
+            filterPropertyTypesByProject(projectName);
+        }
+
+        function filterPropertyTypesByProject(projectName) {
+            const container = document.getElementById('property-types-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (projectName === 'all') {
+                // Show all property types
+                loadPropertyTypesDisplay();
+                return;
+            }
+            
+            const projectData = PROJECTS_DATA[projectName];
+            if (projectData && projectData.propertyTypesOrder) {
+                projectData.propertyTypesOrder.forEach(propertyTypeName => {
+                    const propertyTypeCard = createPropertyTypeCard(propertyTypeName, projectName);
+                    container.appendChild(propertyTypeCard);
+                });
+            }
+        }
+
+        function createPropertyTypeCard(propertyTypeName, projectName = null) {
+            const col = document.createElement('div');
+            col.className = 'col-lg-4 col-md-6 mb-4';
+            
+            // Get property type data
+            let propertyTypeData = null;
+            let displayProjectName = 'bouar 638 (colina)'; // Default project name
+            
+            if (projectName && PROJECTS_DATA[projectName]) {
+                propertyTypeData = PROJECTS_DATA[projectName].propertyTypes[propertyTypeName];
+                displayProjectName = projectName;
+            } else {
+                // Find the first project that has this property type
+                for (const [projName, projData] of Object.entries(PROJECTS_DATA)) {
+                    if (projData.propertyTypes[propertyTypeName]) {
+                        propertyTypeData = projData.propertyTypes[propertyTypeName];
+                        displayProjectName = projName;
+                        break;
+                    }
+                }
+            }
+            
+            if (!propertyTypeData) {
+                // Fallback data
+                propertyTypeData = {
+                    name: propertyTypeName,
+                    displayName: propertyTypeName.charAt(0).toUpperCase() + propertyTypeName.slice(1),
+                    range: 'N/A',
+                    image: getDefaultImage(propertyTypeName),
+                    description: `Modern ${propertyTypeName} properties with contemporary design`,
+                    status: 'available'
+                };
+            }
+            
+            // Determine size range based on property type
+            let sizeRange = '100-145m';
+            if (propertyTypeName === 'duplex') sizeRange = '105-165m';
+            if (propertyTypeName === 'shops') sizeRange = '50-130m';
+            
+            col.innerHTML = `
+                <div class="card property-type-card h-100 shadow-sm">
+                    <div class="position-relative overflow-hidden">
+                        <img src="${propertyTypeData.image}" class="card-img-top" alt="${propertyTypeData.displayName}" 
+                             style="height: 250px; object-fit: cover;">
+                        <span class="position-absolute top-0 end-0 m-2 badge bg-${propertyTypeData.status === 'available' ? 'success' : 'danger'} status-badge">
+                            ${propertyTypeData.status === 'available' ? 'AVAILABLE' : 'SOLD OUT'}
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary">${propertyTypeData.displayName.toLowerCase()}</h5>
+                        <p class="card-text text-muted small">${displayProjectName}</p>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-ruler-combined text-primary me-2"></i>
+                            <span class="small">${sizeRange}</span>
+                        </div>
+                        <p class="card-text flex-grow-1">${propertyTypeData.description}</p>
+                        <div class="mt-auto">
+                            <button class="btn btn-outline-primary btn-sm me-2" onclick="viewPropertyTypeDetails('${propertyTypeName}')">
+                                VIEW DETAILS
+                            </button>
+                            ${propertyTypeData.status === 'available' ? `
+                                <a href="https://wa.me/96178858784?text=${encodeURIComponent(`Hi! I'm interested in ${propertyTypeData.displayName} properties. Please provide more information.`)}" 
+                                   class="btn btn-success btn-sm" target="_blank">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            ` : ''}
+                </div>
+                </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function getDefaultImage(propertyType) {
+            const defaultImages = {
+                'simplex': 'uploads/colina_Simplex_870135b6ba.jpg',
+                'duplex': 'uploads/bouar_84f7def137.jpg',
+                'shops': 'uploads/depositphotos_45227311_stock_photo_modern_real_estate_6e12e07bdc.jpg'
+            };
+            return defaultImages[propertyType] || defaultImages['simplex'];
+        }
+
+        function showNoDataMessage() {
+            const container = document.getElementById('projects-container');
+            const noDataMessage = document.getElementById('no-data-message');
+            
+            if (container) {
+                container.innerHTML = '';
+            }
+            if (noDataMessage) {
+                noDataMessage.style.display = 'block';
+            }
+        }
+
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            if (debugDiv) {
+                debugDiv.innerHTML = `
+                    <h5>✅ Data Loaded Successfully!</h5>
+                    <ul class="mb-0">
+                        <li><strong>Projects:</strong> ${Object.keys(PROJECTS_DATA).length}</li>
+                        <li><strong>Property Types:</strong> ${Object.keys(PROPERTY_TYPES_DATA).length}</li>
+                        <li><strong>Total Apartments:</strong> ${dataManager.apartments.length}</li>
+                    </ul>
+                    <hr>
+                    <h6>Projects:</h6>
+                    <ul>
+                        ${Object.keys(PROJECTS_DATA).map(name => `<li>${name}</li>`).join('')}
+                    </ul>
+                `;
+            }
+        }
+
+        // Placeholder function for View Details button
+        function viewPropertyTypeDetails(propertyType) {
+            alert(`View details for ${propertyType} properties`);
+        }
+
+        // Add click handler to property type cards
+        document.addEventListener('click', function(e) {
+            const propertyCard = e.target.closest('.property-type-card');
+            if (propertyCard && !e.target.closest('button') && !e.target.closest('a')) {
+                // Extract property type from the card title
+                const titleElement = propertyCard.querySelector('.card-title');
+                if (titleElement) {
+                    const propertyType = titleElement.textContent.trim();
+                    viewPropertyTypeDetails(propertyType);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

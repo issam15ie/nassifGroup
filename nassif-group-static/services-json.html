@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Nassif Group (JSON Version)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="nassif-group-logosmall.png" alt="Nassif Group" height="40">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="services.html">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 text-white mb-4">Our Properties</h1>
+                    <p class="lead text-white">Discover our premium real estate offerings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="text-center mb-5">Available Properties</h2>
+                    
+                    <!-- Projects Container -->
+                    <div id="projects-container" class="row">
+                        <!-- Projects will be loaded here -->
+                    </div>
+
+                    <!-- No Data Message -->
+                    <div id="no-data-message" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No properties available</h4>
+                        <p class="text-muted">Please check back later for new listings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Debug Info -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h3>🐛 Debug Information</h3>
+                    <div id="debug-info" class="alert alert-info">
+                        <i class="fas fa-spinner fa-spin"></i> Loading debug information...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script>
+        // Global variables
+        let PROJECTS_DATA = {};
+        let PROPERTY_TYPES_DATA = {};
+        let dataManager;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Starting JSON services page initialization...');
+            
+            // Initialize data manager
+            dataManager = new DataManager();
+            
+            // Wait for data to load
+            setTimeout(() => {
+                console.log('✅ Data manager initialized');
+                initializePage();
+            }, 100);
+        });
+
+        async function initializePage() {
+            try {
+                console.log('🔍 Starting page initialization...');
+                
+                // Load projects and property types
+                console.log('📊 Loading projects and property types...');
+                await loadProjectsAndPropertyTypes();
+                console.log('✅ Projects and property types loaded');
+                
+                // Load projects display
+                console.log('🏗️ Loading projects display...');
+                await loadProjectsDisplay();
+                console.log('✅ Projects display loaded');
+                
+                // Update debug info
+                console.log('📋 Updating debug info...');
+                updateDebugInfo();
+                console.log('✅ Debug info updated');
+                
+                console.log('✅ Page initialization complete');
+                
+            } catch (error) {
+                console.error('❌ Page initialization failed:', error);
+                showNoDataMessage();
+            }
+        }
+
+        async function loadProjectsAndPropertyTypes() {
+            try {
+                const projectsResponse = await dataManager.getProjects();
+                const propertyTypesResponse = await dataManager.getPropertyTypes();
+                
+                if (projectsResponse.data && propertyTypesResponse.data) {
+                    // Process projects data
+                    PROJECTS_DATA = {};
+                    projectsResponse.data.forEach(project => {
+                        const projectData = {
+                            id: project.id,
+                            name: project.name,
+                            status: project.status,
+                            description: project.description,
+                            propertyTypeInfo: project.propertyTypeInfo || {},
+                            propertyTypes: {},
+                            propertyTypesOrder: []
+                        };
+                        
+                        // Process property types
+                        if (project.propertyTypes) {
+                            project.propertyTypes.forEach(propertyTypeName => {
+                                const typeInfo = projectData.propertyTypeInfo[propertyTypeName] || {};
+                                
+                                projectData.propertyTypes[propertyTypeName] = {
+                                    name: propertyTypeName,
+                                    displayName: propertyTypeName.charAt(0).toUpperCase() + propertyTypeName.slice(1),
+                                    range: typeInfo.range || 'N/A',
+                                    image: typeInfo.image || getDefaultImage(propertyTypeName),
+                                    description: `Modern ${propertyTypeName} properties with contemporary design`,
+                                    features: [],
+                                    status: typeInfo.status || 'available',
+                                    priority: typeInfo.priority || 999
+                                };
+                                
+                                projectData.propertyTypesOrder.push(propertyTypeName);
+                            });
+                        }
+                        
+                        PROJECTS_DATA[project.name] = projectData;
+                    });
+                    
+                    // Process property types data
+                    PROPERTY_TYPES_DATA = {};
+                    propertyTypesResponse.data.forEach(pt => {
+                        PROPERTY_TYPES_DATA[pt.name] = {
+                            id: pt.id,
+                            name: pt.name,
+                            displayName: pt.displayName,
+                            range: `${pt.minSize}-${pt.maxSize}${pt.sizeUnit}`,
+                            image: pt.image || getDefaultImage(pt.name),
+                            description: pt.description,
+                            features: pt.features || []
+                        };
+                    });
+                    
+                    console.log('✅ Projects and property types loaded:', {
+                        projects: Object.keys(PROJECTS_DATA).length,
+                        propertyTypes: Object.keys(PROPERTY_TYPES_DATA).length
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Failed to load projects and property types:', error);
+                throw error;
+            }
+        }
+
+        async function loadProjectsDisplay() {
+            try {
+                const container = document.getElementById('projects-container');
+                const noDataMessage = document.getElementById('no-data-message');
+                
+                if (container) {
+                    container.innerHTML = '';
+                    
+                    const projectNames = Object.keys(PROJECTS_DATA);
+                    
+                    if (projectNames.length > 0) {
+                        console.log(`✅ Found ${projectNames.length} projects to display`);
+                        
+                        projectNames.forEach(projectName => {
+                            const projectData = PROJECTS_DATA[projectName];
+                            const projectCard = createProjectCard(projectName, projectData);
+                            container.appendChild(projectCard);
+                        });
+                        
+                        noDataMessage.style.display = 'none';
+                    } else {
+                        console.log('❌ No projects found');
+                        noDataMessage.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Failed to load projects display:', error);
+                showNoDataMessage();
+            }
+        }
+
+        function createProjectCard(projectName, projectData) {
+            const col = document.createElement('div');
+            col.className = 'col-lg-6 col-md-6 mb-4';
+            
+            // Get property types in order
+            const propertyTypes = projectData.propertyTypesOrder.map(typeName => ({
+                name: typeName,
+                ...projectData.propertyTypes[typeName]
+            }));
+            
+            col.innerHTML = `
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary mb-3">${projectName}</h4>
+                        <p class="card-text text-muted mb-4">${projectData.description || 'Modern residential development'}</p>
+                        
+                        <div class="row">
+                            ${propertyTypes.map(propertyType => `
+                                <div class="col-md-6 mb-3">
+                                    <div class="property-type-card p-3 border rounded">
+                                        <div class="text-center mb-2">
+                                            <img src="${propertyType.image}" alt="${propertyType.displayName}" 
+                                                 class="img-fluid rounded" style="height: 120px; object-fit: cover; width: 100%;">
+                                        </div>
+                                        <h6 class="text-center mb-2">${propertyType.displayName}</h6>
+                                        <p class="text-center text-muted small mb-2">${propertyType.range}</p>
+                                        <div class="text-center">
+                                            <span class="badge bg-${propertyType.status === 'available' ? 'success' : 'danger'}">
+                                                ${propertyType.status === 'available' ? 'Available' : 'Sold Out'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function getDefaultImage(propertyType) {
+            const defaultImages = {
+                'simplex': 'uploads/colina_Simplex_870135b6ba.jpg',
+                'duplex': 'uploads/bouar_84f7def137.jpg',
+                'shops': 'uploads/depositphotos_45227311_stock_photo_modern_real_estate_6e12e07bdc.jpg'
+            };
+            return defaultImages[propertyType] || defaultImages['simplex'];
+        }
+
+        function showNoDataMessage() {
+            const container = document.getElementById('projects-container');
+            const noDataMessage = document.getElementById('no-data-message');
+            
+            if (container) {
+                container.innerHTML = '';
+            }
+            if (noDataMessage) {
+                noDataMessage.style.display = 'block';
+            }
+        }
+
+        function updateDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            if (debugDiv) {
+                debugDiv.innerHTML = `
+                    <h5>✅ JSON Data Loaded Successfully!</h5>
+                    <ul class="mb-0">
+                        <li><strong>Projects:</strong> ${Object.keys(PROJECTS_DATA).length}</li>
+                        <li><strong>Property Types:</strong> ${Object.keys(PROPERTY_TYPES_DATA).length}</li>
+                        <li><strong>Total Apartments:</strong> ${dataManager.apartments.length}</li>
+                        <li><strong>Featured Apartments:</strong> ${dataManager.apartments.filter(apt => apt.isFeatured).length}</li>
+                    </ul>
+                    <hr>
+                    <h6>Projects:</h6>
+                    <ul>
+                        ${Object.keys(PROJECTS_DATA).map(name => `<li>${name}</li>`).join('')}
+                    </ul>
+                    <hr>
+                    <h6>Data Source:</h6>
+                    <p class="mb-0">📁 JSON Files (projects.json, apartments.json, property-types.json)</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
