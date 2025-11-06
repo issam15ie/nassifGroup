@@ -503,8 +503,9 @@ body {
 
 /* Page Header */
 .page-header {
-    background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)),
-                url('/uploads/bouar_84f7def137.jpg') center/cover;
+    background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8));
+    background-size: cover;
+    background-position: center;
     padding: 120px 0 80px;
     text-align: center;
     margin-top: 76px;
@@ -1183,14 +1184,14 @@ html {
 @media (min-width: 1200px) {
     #project-filter-buttons .col-xl-4,
     #property-type-container .col-xl-4 {
-        width: 32.333333% !important;
+        width: 29.333333% !important;
     }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     #project-filter-buttons .col-lg-6,
     #property-type-container .col-lg-6 {
-        width: 32.333333% !important;
+        width: 29.333333% !important;
     }
 }
 
@@ -1214,6 +1215,14 @@ html {
     
     .stat-item {
         font-size: 0.85rem;
+    }
+    
+    #project-filter-buttons {
+        row-gap: 0.75rem;
+    }
+    
+    #project-filter-buttons .mb-4 {
+        margin-bottom: 0.5rem !important;
     }
 }
 
@@ -1345,10 +1354,16 @@ html {
 #project-filter-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 68px;
+    row-gap: 1rem;
     padding: 5px 0;
     margin-bottom: 10px;
     justify-content: center;
+}
+
+/* Minimize vertical spacing between project card rows */
+#project-filter-buttons .mb-4 {
+    margin-bottom: 0.5rem !important;
 }
 
 /* Project Status Styling */
@@ -1825,6 +1840,7 @@ html {
 .leadership-photo {
     width: 200px;
     height: 200px;
+    justify-self: center;
     object-fit: cover;
     border: 4px solid #3498db;
     box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);

@@ -3,8 +3,7 @@
 ## 📋 Pre-Deployment Checklist
 
 ### ✅ Prerequisites
-- [x] Email configuration complete locally
-- [ ] SMTP password received from Namecheap contact
+- [x] Email configuration complete (using mailto: links - no SMTP needed)
 - [ ] Namecheap contact confirmed they'll handle DNS
 - [ ] GitHub repository accessible
 
@@ -14,18 +13,12 @@
 
 ### **PART 1: Get Ready (Do This First)**
 
-#### 1. Get Email Password
-**From Namecheap contact:**
-```
-"I need the SMTP password for info@nassifgroup.com to configure the contact form email."
-```
-
-**Update locally:**
-- Open `env.development`
-- Replace `your-password-here` on line 32 with real password
-- Save file
-- Strapi auto-reloads
-- Test contact form at `http://localhost:1337/contact.html`
+#### 1. Email Configuration (DONE!)
+**✅ Contact form uses mailto: links**
+- No SMTP configuration needed
+- Users send emails from their own email client
+- No server-side email setup required
+- Test contact form at `http://localhost:1337/contact.html` (opens email client)
 
 #### 2. Confirm DNS Setup
 **Tell Namecheap contact:**
@@ -117,13 +110,9 @@ PORT=10000
 # ===== PRODUCTION SETTINGS =====
 NODE_ENV=production
 
-# ===== EMAIL CONFIGURATION =====
-SMTP_HOST=mail.privateemail.com
-SMTP_PORT=465
-SMTP_USERNAME=info@nassifgroup.com
-SMTP_PASSWORD=<paste-real-smtp-password-here>
-EMAIL_FROM=info@nassifgroup.com
-EMAIL_REPLY_TO=info@nassifgroup.com
+# ===== EMAIL CONFIGURATION (NOT NEEDED) =====
+# Contact form uses mailto: links - no SMTP configuration required
+# Users send emails from their own email client
 
 # ===== CORS CONFIGURATION =====
 CORS_ENABLED=true
@@ -135,7 +124,7 @@ SESSION_SECRET=nassif-group-session-secret
 
 **⚠️ IMPORTANT: Replace:**
 - `<paste-internal-database-url-here>` with your PostgreSQL internal URL
-- `<paste-real-smtp-password-here>` with the real SMTP password
+- Email configuration not needed (using mailto: links)
 
 **After adding all variables, click "Save Changes"**
 
@@ -391,7 +380,7 @@ Admin: https://nassif-group-website.onrender.com/admin
 - Check CORS configuration
 
 ### **Email Not Sending**
-- Verify SMTP credentials
+- Verify contact form opens email client (mailto: link)
 - Check email logs in Render
 - Test from local first
 
@@ -422,7 +411,7 @@ Admin: https://nassif-group-website.onrender.com/admin
 ## 📝 Summary
 
 **You handled:**
-- ✅ Email configuration
+- ✅ Email configuration (mailto: links - no SMTP needed)
 - ✅ Deployment on Render
 - ✅ Database setup
 - ✅ Environment variables

@@ -123,7 +123,7 @@ class StrapiAPI {
 
     // Get site settings
     async getSiteSettings() {
-        return await this.apiCall('/site-setting?populate=homePageBackgroundImage,servicesPageBackgroundImage,aboutPageBackgroundImage,contactPageBackgroundImage,blogPageBackgroundImage');
+        return await this.apiCall('/site-setting?populate=homePageBackgroundImage,servicesPageBackgroundImage,aboutPageBackgroundImage,contactPageBackgroundImage,blogPageBackgroundImage,managingDirectorPhoto');
     }
 
     // Get property types by project

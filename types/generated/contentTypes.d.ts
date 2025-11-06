@@ -1130,6 +1130,7 @@ export interface ApiSiteSettingSiteSetting extends Schema.SingleType {
     contactEmail: Attribute.Email;
     contactPhone: Attribute.String;
     whatsappNumber: Attribute.String;
+    managingDirectorPhoto: Attribute.Media;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

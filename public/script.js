@@ -3,7 +3,38 @@
 // Global WhatsApp function - MUST be at top
 window.contactAboutProperty = function(projectKey, propertyType) {
     console.log('🟢 WhatsApp function called!', projectKey, propertyType);
-    const message = `Hi! I'm interested in ${propertyType} units in ${projectKey}. Please provide more information.`;
+    
+    // Get project and property type data
+    const projectData = PROJECTS_DATA[projectKey];
+    if (!projectData) {
+        console.error('Project data not found for:', projectKey);
+        const simpleMessage = `Hi! I'm interested in ${propertyType} units in ${projectKey}. Please provide more information.`;
+        const whatsappUrl = `https://wa.me/96178858784?text=${encodeURIComponent(simpleMessage)}`;
+        window.open(whatsappUrl, '_blank');
+        return;
+    }
+    
+    const typeData = projectData.propertyTypes[propertyType];
+    if (!typeData) {
+        console.error('Property type data not found for:', propertyType);
+        const simpleMessage = `Hi! I'm interested in ${propertyType} units in ${projectKey}. Please provide more information.`;
+        const whatsappUrl = `https://wa.me/96178858784?text=${encodeURIComponent(simpleMessage)}`;
+        window.open(whatsappUrl, '_blank');
+        return;
+    }
+    
+    const typeDisplayName = strapiAPI.getPropertyTypeDisplayName(propertyType);
+    
+    // Build detailed property information message (same format as contact form)
+    let message = `Hi! I'm interested in the following property:\n\n`;
+    message += `Project: ${projectData.name}\n`;
+    message += `Property Type: ${typeDisplayName}\n`;
+    message += `Size Range: ${typeData.range || 'N/A'}\n`;
+    if (typeData.description) {
+        message += `Description: ${typeData.description}\n`;
+    }
+    message += `\nPlease provide me with more information about this property.`;
+    
     const whatsappUrl = `https://wa.me/96178858784?text=${encodeURIComponent(message)}`;
     console.log('🟢 Opening WhatsApp URL:', whatsappUrl);
     window.open(whatsappUrl, '_blank');
@@ -98,6 +129,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add event listener for WhatsApp buttons and back button (using event delegation)
     document.addEventListener('click', function(e) {
+        // Inquire Now button handler
+        if (e.target.closest('.inquire-now-btn')) {
+            const btn = e.target.closest('.inquire-now-btn');
+            const projectKey = btn.getAttribute('data-project');
+            const propertyType = btn.getAttribute('data-property-type');
+            console.log('📧 Inquire Now button clicked!', projectKey, propertyType);
+            if (window.redirectToContactForm) {
+                window.redirectToContactForm(projectKey, propertyType);
+            }
+            return;
+        }
+        
         // WhatsApp button handler
         if (e.target.closest('.whatsapp-btn')) {
             const btn = e.target.closest('.whatsapp-btn');
@@ -226,7 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.querySelector('.navbar-collapse');
     
     if (navbarToggler && navbarCollapse) {
-        navbarToggler.addEventListener('click', function() {
+        navbarToggler.addEventListener('click', function(e) {
+            e.stopPropagation();
             navbarCollapse.classList.toggle('show');
         });
 
@@ -239,12 +283,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            // Check if menu is open
+            if (navbarCollapse.classList.contains('show')) {
+                // Check if click is outside navbar and navbar-collapse
+                const clickedNavbar = e.target.closest('.navbar');
+                const clickedMenu = e.target.closest('.navbar-collapse');
+                const clickedToggler = e.target.closest('.navbar-toggler');
+                
+                // Close if click is outside navbar, menu, and toggler
+                if (!clickedNavbar && !clickedMenu && !clickedToggler) {
+                    navbarCollapse.classList.remove('show');
+                }
+            }
+        });
     }
 
-    // Form validation for contact form
+    // Form validation for contact form - Using mailto: instead of SMTP
     const contactForm = document.querySelector('#contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
+        // Check for URL parameters to pre-fill form
+        const urlParams = new URLSearchParams(window.location.search);
+        const prefillMessage = urlParams.get('message');
+        const prefillSubject = urlParams.get('subject');
+        
+        if (prefillMessage) {
+            const messageField = document.querySelector('#message');
+            if (messageField) {
+                messageField.value = decodeURIComponent(prefillMessage);
+            }
+        }
+        
+        if (prefillSubject) {
+            const subjectField = document.querySelector('#subject');
+            if (subjectField) {
+                subjectField.value = prefillSubject;
+            }
+        }
+        
+        // Scroll to form if pre-filled
+        if (prefillMessage || prefillSubject) {
+            setTimeout(() => {
+                contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+        
+        contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             // Basic validation
@@ -264,43 +350,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Show loading state
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
+            // Recipient email address (matches the email shown on contact page)
+            const recipientEmail = 'info@nassifgroup.com';
             
-            try {
-                // Send to API
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        message,
-                        subject,
-                        phone,
-                    }),
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showAlert('Thank you! We\'ll get back to you soon.', 'success');
-                    contactForm.reset();
-                } else {
-                    showAlert('Failed to send message. Please try again.', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('An error occurred. Please try again later.', 'error');
-            } finally {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+            // Format subject
+            const subjectOptions = {
+                'property-inquiry': 'Property Inquiry',
+                'investment-consultation': 'Investment Consultation',
+                'general-inquiry': 'General Inquiry',
+                'partnership': 'Partnership Opportunity',
+                'other': 'Other'
+            };
+            const emailSubject = subjectOptions[subject] || 'Contact Form Inquiry';
+            
+            // Format email body with all form details
+            let emailBody = `--- Contact Information ---\n`;
+            emailBody += `Name: ${name}\n`;
+            emailBody += `Email: ${email}\n`;
+            if (phone) {
+                emailBody += `Phone: ${phone}\n`;
             }
+            emailBody += `\n--- Message ---\n${message}\n\n`;
+            emailBody += `---\n`;
+            emailBody += `This message was sent from the Nassif Group website contact form.`;
+            
+            // URL encode the subject and body
+            const encodedSubject = encodeURIComponent(emailSubject);
+            const encodedBody = encodeURIComponent(emailBody);
+            
+            // Create mailto link
+            const mailtoLink = `mailto:${recipientEmail}?subject=${encodedSubject}&body=${encodedBody}`;
+            
+            // Show success message
+            showAlert('Opening your email client... Please send the email to complete your inquiry.', 'success');
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Reset form after a short delay
+            setTimeout(() => {
+                contactForm.reset();
+            }, 1000);
         });
     }
 
@@ -979,7 +1069,9 @@ function createPropertyTypeCard(projectKey, propertyType, typeData) {
             <p class="property-range"><i class="fas fa-ruler-combined"></i> ${typeData.range}</p>
             <p class="property-description">${typeData.description || `Premium ${typeDisplayName.toLowerCase()} units with modern amenities and excellent location.`}</p>
             <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary flex-grow-1" onclick="viewPropertyTypeDetails('${projectKey}', '${propertyType}')">View Details</button>
+                <button class="btn btn-primary flex-grow-1 inquire-now-btn" data-project="${projectKey}" data-property-type="${propertyType}">
+                    <i class="fas fa-envelope me-2"></i>Inquire Now
+                </button>
                 ${propertyTypeStatus === 'available' ? 
                     `<button class="btn btn-success whatsapp-btn" data-project="${projectKey}" data-type="${propertyType}" title="Contact via WhatsApp">
                         <i class="fab fa-whatsapp"></i>
@@ -1408,15 +1500,42 @@ function showApartmentModal(apartment) {
     });
 }
 
-// View property type details
-function viewPropertyTypeDetails(projectKey, propertyType) {
+// Redirect to contact form with property information pre-filled
+window.redirectToContactForm = function(projectKey, propertyType) {
+    console.log('Redirecting to contact form with:', projectKey, propertyType);
+    
     const projectData = PROJECTS_DATA[projectKey];
+    if (!projectData) {
+        console.error('Project data not found for:', projectKey);
+        window.location.href = 'contact.html?subject=property-inquiry';
+        return;
+    }
+    
     const typeData = projectData.propertyTypes[propertyType];
+    if (!typeData) {
+        console.error('Property type data not found for:', propertyType);
+        window.location.href = 'contact.html?subject=property-inquiry';
+        return;
+    }
+    
     const typeDisplayName = strapiAPI.getPropertyTypeDisplayName(propertyType);
     
-    // Load apartments for this specific project and property type
-    loadApartmentsByProjectAndType(projectKey, propertyType);
-}
+    // Build property information message
+    let propertyInfo = `I'm interested in the following property:\n\n`;
+    propertyInfo += `Project: ${projectData.name}\n`;
+    propertyInfo += `Property Type: ${typeDisplayName}\n`;
+    propertyInfo += `Size Range: ${typeData.range || 'N/A'}\n`;
+    if (typeData.description) {
+        propertyInfo += `Description: ${typeData.description}\n`;
+    }
+    propertyInfo += `\nPlease provide me with more information about this property.`;
+    
+    // Encode the property information for URL
+    const encodedMessage = encodeURIComponent(propertyInfo);
+    
+    // Redirect to contact form with pre-filled message
+    window.location.href = `contact.html?message=${encodedMessage}&subject=property-inquiry`;
+};
 
 
 // Load apartments by project and property type

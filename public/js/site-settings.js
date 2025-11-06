@@ -60,7 +60,16 @@ class SiteSettingsManager {
 
     // Apply page-specific background images
     applyPageBackground(pageName) {
-        if (!this.settings) return;
+        const pageHeader = document.querySelector('.page-header');
+        if (!pageHeader) return;
+
+        // Start with just gradient (no image) to prevent flash
+        pageHeader.style.backgroundImage = 'linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8))';
+        
+        if (!this.settings) {
+            // Fallback if no settings loaded
+            return;
+        }
 
         const backgroundMappings = {
             'services': 'servicesPageBackgroundImage',
@@ -70,18 +79,23 @@ class SiteSettingsManager {
         };
 
         const backgroundField = backgroundMappings[pageName];
-        if (!backgroundField || !this.settings[backgroundField]) return;
+        if (!backgroundField || !this.settings[backgroundField]) {
+            // No background image set in site settings, keep just gradient
+            return;
+        }
 
         const backgroundImageUrl = this.settings[backgroundField].data?.attributes?.url;
         if (backgroundImageUrl) {
-            console.log(`🖼️ Applying ${pageName} page background:`, backgroundImageUrl);
-            
-            // Apply to page header
-            const pageHeader = document.querySelector('.page-header');
-            if (pageHeader) {
-                pageHeader.style.backgroundImage = `linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('${backgroundImageUrl}')`;
-                console.log(`✅ ${pageName} page background applied`);
+            // Clean the URL (remove localhost if present)
+            let cleanUrl = backgroundImageUrl;
+            if (cleanUrl.includes('localhost:1337')) {
+                const match = cleanUrl.match(/\/uploads\/[^?]+/);
+                cleanUrl = match ? match[0] : cleanUrl;
             }
+            
+            console.log(`🖼️ Applying ${pageName} page background:`, cleanUrl);
+            pageHeader.style.backgroundImage = `linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('${cleanUrl}')`;
+            console.log(`✅ ${pageName} page background applied`);
         }
     }
 
@@ -201,6 +215,11 @@ class SiteSettingsManager {
         if (this.getCurrentPageName() === 'contact') {
             this.updateContactPageInfo();
         }
+
+        // Update about page specific elements
+        if (this.getCurrentPageName() === 'about') {
+            this.updateAboutPageInfo();
+        }
     }
 
     // Update contact page specific information
@@ -229,6 +248,44 @@ class SiteSettingsManager {
         }
     }
 
+    // Update about page specific information
+    updateAboutPageInfo() {
+        console.log('📄 Updating about page info...');
+        
+        // Update Managing Director photo
+        const leadershipPhoto = document.querySelector('.leadership-photo');
+        if (!leadershipPhoto) return;
+        
+        // Start with image hidden to prevent flash
+        leadershipPhoto.style.display = 'none';
+        
+        if (this.settings && this.settings.managingDirectorPhoto) {
+            const photoData = this.settings.managingDirectorPhoto.data?.attributes;
+            if (photoData) {
+                let photoUrl = photoData.url;
+                
+                // Clean the URL (remove localhost, make it relative if needed)
+                if (photoUrl && photoUrl.includes('localhost:1337')) {
+                    const match = photoUrl.match(/\/uploads\/[^?]+/);
+                    photoUrl = match ? match[0] : photoUrl;
+                }
+                
+                if (photoUrl) {
+                    console.log('🖼️ Applying Managing Director photo:', photoUrl);
+                    leadershipPhoto.src = photoUrl;
+                    leadershipPhoto.style.display = 'block';
+                    console.log('✅ Managing Director photo updated');
+                    return;
+                }
+            }
+        }
+        
+        // Fallback if no photo in settings or photo data not found
+        leadershipPhoto.src = '/uploads/colina_Simplex_870135b6ba.jpg';
+        leadershipPhoto.style.display = 'block';
+        console.log('⚠️ Using fallback Managing Director photo');
+    }
+
     // Initialize site settings for current page
     async initializeForCurrentPage() {
         await this.loadSiteSettings();
@@ -246,6 +303,11 @@ class SiteSettingsManager {
         if (this.settings) {
             this.updateSiteInfo();
             this.updateContactInfo();
+            
+            // Update about page info early to prevent flash
+            if (currentPage === 'about') {
+                this.updateAboutPageInfo();
+            }
         }
     }
 }
