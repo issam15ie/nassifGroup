@@ -1931,6 +1931,29 @@ html {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Developer credit */
+.developer-credit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    opacity: 0.9;
+}
+
+.developer-credit-text {
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.developer-credit-text a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.developer-credit-text a:hover {
+    text-decoration: underline;
+}
+
 /* Responsive adjustments for About page */
 @media (max-width: 768px) {
     .leadership-photo {
